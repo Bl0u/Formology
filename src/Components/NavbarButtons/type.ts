@@ -2,7 +2,7 @@ type QuestionType = 'text' | 'radio' | 'checkbox';
 
 interface BaseQuestionProps {
   question?: string;
-  type?: QuestionType;
+  type?: QuestionType | string;
 }
 
 
