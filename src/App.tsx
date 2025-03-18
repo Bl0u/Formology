@@ -22,10 +22,23 @@ function App() {
         newContent[currSectionTitle] = [];
       }
       newContent[currSectionTitle] = [...newContent[currSectionTitle], "text"];
-      // console.log('Updated sectionContent:', newContent);
       return newContent;
     });
   };
+
+  const handleClickAddRadio = () => {
+    if (!isSectionStarted) return ;
+    setSectionContent((prev) => {
+      const newContent = {...prev} ;
+      if (!newContent[currSectionTitle]){
+        newContent[currSectionTitle] = [] ;
+      }
+      newContent[currSectionTitle] = [...newContent[currSectionTitle], 'radio'] ;
+      return newContent
+    })
+    alert('radio added') ;
+  }
+
   const handleClickStartSection = () => {
     if (btnName === "Start Section") {
       const title = prompt("Please provide the section name:");
@@ -38,6 +51,7 @@ function App() {
       setSectionsStatus(0);
     }
   };
+
   return (
     <>
       <Navbar>
@@ -47,13 +61,16 @@ function App() {
         <button className="navbar-buttons" onClick={handleClickAddText}>
           Add Text
         </button>
+        <button className="navbar-buttons" onClick={handleClickAddRadio}>
+          Add Radio Question
+        </button>
       </Navbar>
       <Form>
         {Object.entries(sectionContent).map(([key, values], index) => (
           <div key={index}>
             <h3 className="hope">{key}</h3>
             {values.map((type, subIndex) => (
-              <Question key={subIndex} question="how old are you" type={type} />
+              <Question key={subIndex} question="how old are you" type={type}  />
             ))}
           </div>
         ))}

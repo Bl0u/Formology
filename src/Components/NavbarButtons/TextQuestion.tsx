@@ -7,7 +7,6 @@ export default function TextQuestion(props: BaseQuestionProps ) {
     const [text, setText] = useState('') ;
   return (
     <div>
-        
         <textarea
             onChange={ (e) => {
                 setText(e.target.value) ;
@@ -21,7 +20,6 @@ export default function TextQuestion(props: BaseQuestionProps ) {
             onChange={ (e) => {
                 setText(e.target.value) ;
                     // console.log(e.target.value);
-                    
             }}
           placeholder="Enter your text here..."
           rows={4}
