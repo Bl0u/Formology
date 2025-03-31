@@ -5,6 +5,7 @@ import BaseQuestionProps from "./type";
 
 export default function TextQuestion(props: BaseQuestionProps ) {
     const [text, setText] = useState('') ;
+
   return (
     <div>
         <textarea
@@ -25,6 +26,32 @@ export default function TextQuestion(props: BaseQuestionProps ) {
           rows={4}
           cols={50}
         ></textarea>
+
+          <button
+              onClick={() => {
+                console.log("Button clicked, removeOption:", typeof props.removeOption);
+                if (props.removeOption) {
+                  props.removeOption(props.id);
+                } else {
+                  console.error("removeOption function is undefined");
+                }
+              }}
+              style={{
+              backgroundColor: "rgba(0, 0, 0, 0.3)", // 70% transparent black
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            ✖
+          </button>
     </div>
   );
 }

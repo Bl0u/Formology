@@ -1,54 +1,100 @@
 import "./App.css";
 import Question from "./Components/NavbarButtons/Question";
-import Section from "./Components/NavbarButtons/Section";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar";
-import React, { startTransition, use, useState, useEffect } from "react";
+import React, { useState } from "react";
+import { generateUniqueId } from "./Components/NavbarButtons/type.ts";
+
+interface SectionContent {
+  title: string;
+  questions: {
+    [key: string]: string; // id : string = id: text || radio || select
+  };
+}
 
 function App() {
-  const [addTextQuestion, setTextQuestion] = useState(0);
-  const [isSectionStarted, setSectionsStatus] = useState(0);
   const [sectionContent, setSectionContent] = useState<{
-    [key: string]: string[];
+    [id: string]: SectionContent;
   }>({});
-  const [currSectionTitle, setCurrSectionTitle] = useState<string>("");
+  const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const [btnName, setBtnName] = useState("Start Section");
 
   const handleClickAddText = () => {
-    if (!isSectionStarted) return ;
+    if (!currSectionId) return;
+
     setSectionContent((prev) => {
       const newContent = { ...prev };
-      if (!newContent[currSectionTitle]) {
-        newContent[currSectionTitle] = [];
-      }
-      newContent[currSectionTitle] = [...newContent[currSectionTitle], "text"];
+      const currTextId = generateUniqueId();
+
+      newContent[currSectionId] = {
+        ...newContent[currSectionId],
+        questions: {
+          ...newContent[currSectionId].questions,
+          [currTextId]: "text",
+        },
+      };
+
       return newContent;
     });
   };
 
   const handleClickAddRadio = () => {
-    if (!isSectionStarted) return ;
+    if (!currSectionId) return ;
+
     setSectionContent((prev) => {
       const newContent = {...prev} ;
-      if (!newContent[currSectionTitle]){
-        newContent[currSectionTitle] = [] ;
-      }
-      newContent[currSectionTitle] = [...newContent[currSectionTitle], 'radio'] ;
-      return newContent
+      const currRadioId = generateUniqueId() ;
+      newContent[currSectionId] = {
+        ...newContent[currSectionId],
+        questions: {
+          ...newContent[currSectionId].questions,
+          [currRadioId]: 'radio'
+        }, 
+      } ;
+
+      return newContent ;
     })
-    alert('radio added') ;
   }
+
+  const handleRemoveOption = (id: string) => {
+    setSectionContent((prev) => {
+      const newContent = { ...prev };
+      Object.keys(newContent).forEach((sectionId) => {
+        if (newContent[sectionId].questions[id]) {
+          delete newContent[sectionId].questions[id];
+        }
+      });
+      return newContent;
+    });
+  };
 
   const handleClickStartSection = () => {
     if (btnName === "Start Section") {
       const title = prompt("Please provide the section name:");
-      if (!title) return ;
-      setCurrSectionTitle(title);
+      if (!title) return;
+
+      const existingSectionId = Object.keys(sectionContent).find(
+        (id) => sectionContent[id].title === title
+      );
+
+      if (existingSectionId) {
+        setCurrSectionId(existingSectionId);
+      } else {
+        const newSectionId = generateUniqueId();
+        setCurrSectionId(newSectionId);
+        setSectionContent((prev) => ({
+          ...prev,
+          [newSectionId]: {
+            title: title,
+            questions: {},
+          },
+        }));
+      }
+
       setBtnName("End Section");
-      setSectionsStatus(1);
-    } else if (btnName === "End Section") {
+    } else {
       setBtnName("Start Section");
-      setSectionsStatus(0);
+      setCurrSectionId(null);
     }
   };
 
@@ -62,15 +108,20 @@ function App() {
           Add Text
         </button>
         <button className="navbar-buttons" onClick={handleClickAddRadio}>
-          Add Radio Question
+          Add Radio
         </button>
       </Navbar>
       <Form>
-        {Object.entries(sectionContent).map(([key, values], index) => (
-          <div key={index}>
-            <h3 className="hope">{key}</h3>
-            {values.map((type, subIndex) => (
-              <Question key={subIndex} question="how old are you" type={type}  />
+        {Object.entries(sectionContent).map(([sectionId, section]) => (
+          <div key={sectionId}>
+            <h3 className="section-title">{section.title}</h3>
+            {Object.entries(section.questions).map(([questionId, type]) => (
+              <Question
+                key={questionId}
+                id={questionId}
+                type={type}
+                removeOption={handleRemoveOption}
+              />
             ))}
           </div>
         ))}

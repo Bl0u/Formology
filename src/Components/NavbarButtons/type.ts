@@ -5,6 +5,7 @@ interface BaseQuestionProps {
   question?: string;
   type?: QuestionType | string;
   choices?: string[];
+  removeOption?: (id: string) => void; // Make sure this is defined
 }
 
 // Function to generate a random unique ID

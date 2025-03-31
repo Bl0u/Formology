@@ -36,7 +36,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   return (
     <div style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px" }}>
       {/* Question Textarea */}
-      <textarea value={props.question} rows={1} cols={50} readOnly></textarea>
+      <textarea value={props.question} rows={1} cols={50}></textarea>
       <br />
 
       {/* Loop through choices dynamically */}
@@ -85,6 +85,33 @@ export default function RadioQuestion(props: BaseQuestionProps) {
       <br />
       {/* Button to Add More Choices */}
       <button onClick={addChoice}>Add Choice</button>
+
+      
+      <button
+              onClick={() => {
+                console.log("Button clicked, removeOption:", typeof props.removeOption);
+                if (props.removeOption) {
+                  props.removeOption(props.id);
+                } else {
+                  console.error("removeOption function is undefined");
+                }
+              }}
+              style={{
+              backgroundColor: "rgba(0, 0, 0, 0.3)", // 70% transparent black
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            ✖
+          </button>
     </div>
   );
 }
