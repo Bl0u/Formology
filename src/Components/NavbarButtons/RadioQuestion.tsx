@@ -5,9 +5,6 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   const [choices, setChoices] = useState<string[]>([]);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
 
-  // Unique name for the radio group to prevent cross-question interference
-  const questionName = `radio-question-${props.id || Math.random().toString(36).substr(2, 9)}`;
-
   // Function to add a new empty choice without selecting it automatically
   const addChoice = () => {
     setChoices((prevChoices) => [...prevChoices, ""]); // Adds an empty choice
@@ -45,7 +42,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
           {/* Selectable radio button with a unique group name */}
           <input
             type="radio"
-            name={questionName} // Ensures all options in this question are in the same group
+            name={props.id} // Ensures all options in this question are in the same group
             value={choice}
             checked={selectedChoice === choice}
             onChange={() => setSelectedChoice(choice)}
@@ -111,7 +108,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
             }}
           >
             ✖
-          </button>
+      </button>
     </div>
   );
 }

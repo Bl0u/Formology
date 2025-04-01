@@ -2,9 +2,9 @@ type QuestionType = 'text' | 'radio' | 'checkbox';
 
 interface BaseQuestionProps {
   id: string; // Ensure ID is always a string
-  question?: string;
   type?: QuestionType | string;
-  choices?: string[];
+  question?: string;
+  questionOptions?: string[] | null;
   removeOption?: (id: string) => void; // Make sure this is defined
 }
 

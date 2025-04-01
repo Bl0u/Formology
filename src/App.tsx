@@ -4,91 +4,204 @@ import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar";
 import React, { useState } from "react";
 import { generateUniqueId } from "./Components/NavbarButtons/type.ts";
+import AskAi from "./Components/NavbarButtons/AskAi";
 
+interface Question {
+  questionId: string;
+  type: string;
+  question?: string;
+  values?: string[] | null;
+}
 interface SectionContent {
-  title: string;
-  questions: {
-    [key: string]: string; // id : string = id: text || radio || select
-  };
+  title?: string;
+  sectionId?: string;
+  questions?: Question[];
 }
 
 function App() {
-  const [sectionContent, setSectionContent] = useState<{
-    [id: string]: SectionContent;
-  }>({});
+  const [sectionContent, setSectionContent] = useState<SectionContent>(
+    {} as SectionContent
+  );
+  const [sections, setSections] = useState<SectionContent[]>([]);
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const [btnName, setBtnName] = useState("Start Section");
 
+  const handleAiRequest = async (message: string) => {
+    try {
+      const response = await fetch(import.meta.env.VITE_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Generate a structured JSON form with an appropriate section name. 
+                  - The form should focus on '${message}'.
+                  - Include only JSON output with:
+                    {
+                      "sectionName": "Suggested Section Title",
+                      "fields": [
+                        {
+                          "type": "radio",
+                          "question": "Example radio question?",
+                          "options": ["Option1", "Option2"]
+                        },
+                        {
+                          "type": "checkbox",
+                          "question": "Example checkbox question?",
+                          "options": ["Option1", "Option2", "Option3"]
+                        },
+                        {
+                          "type": "textarea",
+                          "question": "Example open-ended question?"
+                        }
+                      ]
+                    }
+                  - Ensure that the JSON contains a "sectionName" and a "fields" array.
+                  - Do not wrap the JSON inside markdown formatting.
+                  - Return only JSON, no explanations.`,
+                },
+              ],
+            },
+          ],
+        }),
+      });
+
+      const data = await response.json();
+      let aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      aiText = aiText.replace(/```json|```/g, "").trim();
+
+      let parsed;
+      try {
+        parsed = JSON.parse(aiText);
+      } catch (parseError) {
+        console.error("Failed to parse AI response:", parseError);
+        parsed = { sectionName: "AI Generated Section", fields: [] };
+      }
+      // console.log(parsed);
+
+      if (Array.isArray(parsed.fields)) {
+        const aiSection: SectionContent = {
+          title: parsed.sectionName || "AI Generated Section",
+          sectionId: generateUniqueId(),
+          questions: parsed.fields.map(
+            (field: {
+              type: "text" | "radio" | "checkbox";
+              question: string;
+              options?: string[];
+            }) => {
+              return {
+                questionId: generateUniqueId(),
+                type: field.type,
+                question: field.question,
+                values: field.options || null,
+              };
+            }
+          ),
+        };
+        // console.log(aiSection) ;
+        if (aiSection.sectionId) {
+          setCurrSectionId(aiSection.sectionId); // Fixed: id to sectionId
+        }
+        setSections((prev) => [...prev, aiSection]);
+      } else {
+        console.warn("AI response did not contain a valid 'fields' array.");
+      }
+    } catch (error) {
+      console.error("Failed to fetch AI response:", error);
+    }
+  };
+
+  // const handleClickedAddCheckBox = () => {
+  //   if (!currSectionId) return;
+  //   setSectionContent((prev) => {
+  //     const currCheckBoxId = generateUniqueId();
+  //     const newContent = { ...prev };
+  //     newContent[currSectionId] = {
+  //       ...newContent[currSectionId],
+  //       questions: {
+  //         ...newContent[currSectionId].questions,
+  //         [currCheckBoxId]: "checkbox",
+  //       },
+  //     };
+  //     return newContent;
+  //   });
+  // };
+
   const handleClickAddText = () => {
     if (!currSectionId) return;
-
-    setSectionContent((prev) => {
-      const newContent = { ...prev };
-      const currTextId = generateUniqueId();
-
-      newContent[currSectionId] = {
-        ...newContent[currSectionId],
-        questions: {
-          ...newContent[currSectionId].questions,
-          [currTextId]: "text",
-        },
-      };
-
-      return newContent;
-    });
-  };
-
-  const handleClickAddRadio = () => {
-    if (!currSectionId) return ;
-
-    setSectionContent((prev) => {
-      const newContent = {...prev} ;
-      const currRadioId = generateUniqueId() ;
-      newContent[currSectionId] = {
-        ...newContent[currSectionId],
-        questions: {
-          ...newContent[currSectionId].questions,
-          [currRadioId]: 'radio'
-        }, 
-      } ;
-
-      return newContent ;
-    })
-  }
-
-  const handleRemoveOption = (id: string) => {
-    setSectionContent((prev) => {
-      const newContent = { ...prev };
-      Object.keys(newContent).forEach((sectionId) => {
-        if (newContent[sectionId].questions[id]) {
-          delete newContent[sectionId].questions[id];
+  
+    setSections(prevSections => {
+      return prevSections.map(section => {
+        if (section.sectionId === currSectionId) {
+          const updatedQuestions = [
+            ...(section.questions || []),
+            {
+              questionId: generateUniqueId(),
+              type: "text",
+              question: "",
+              values: [],
+            }
+          ];
+          return { ...section, questions: updatedQuestions };
         }
+        return section;
       });
-      return newContent;
     });
   };
+
+  // const handleClickAddRadio = () => {
+  //   if (!currSectionId) return;
+
+  //   setSectionContent((prev) => {
+  //     const newContent = { ...prev };
+  //     const currRadioId = generateUniqueId();
+  //     newContent[currSectionId] = {
+  //       ...newContent[currSectionId],
+  //       questions: {
+  //         ...newContent[currSectionId].questions,
+  //         [currRadioId]: "radio",
+  //       },
+  //     };
+
+  //     return newContent;
+  //   });
+  // };
+
+  // const handleRemoveOption = (id: string) => {
+  //   setSectionContent((prev) => {
+  //     const newContent = { ...prev };
+  //     Object.keys(newContent).forEach((sectionId) => {
+  //       if (newContent[sectionId].questions[id]) {
+  //         delete newContent[sectionId].questions[id];
+  //       }
+  //     });
+  //     return newContent;
+  //   });
+  // };
 
   const handleClickStartSection = () => {
     if (btnName === "Start Section") {
-      const title = prompt("Please provide the section name:");
-      if (!title) return;
+      const hope = prompt("Please provide the section name:");
+      if (!hope) return;
 
-      const existingSectionId = Object.keys(sectionContent).find(
-        (id) => sectionContent[id].title === title
+      const existingSectionId = Object.keys({ sections }).find(
+        (sectionId) => sectionContent.title === hope
       );
 
       if (existingSectionId) {
         setCurrSectionId(existingSectionId);
       } else {
-        const newSectionId = generateUniqueId();
-        setCurrSectionId(newSectionId);
-        setSectionContent((prev) => ({
-          ...prev,
-          [newSectionId]: {
-            title: title,
-            questions: {},
-          },
-        }));
+        const newSection: SectionContent = {
+          title: hope,
+          sectionId: generateUniqueId(),
+          questions: [],
+        };
+        if (newSection.sectionId) {
+          setCurrSectionId(newSection.sectionId);
+        }
+        setSections((prev) => [...prev, newSection]);
       }
 
       setBtnName("End Section");
@@ -98,6 +211,7 @@ function App() {
     }
   };
 
+  console.log(sections);
   return (
     <>
       <Navbar>
@@ -107,20 +221,26 @@ function App() {
         <button className="navbar-buttons" onClick={handleClickAddText}>
           Add Text
         </button>
-        <button className="navbar-buttons" onClick={handleClickAddRadio}>
+        {/* <button className="navbar-buttons" onClick={handleClickAddRadio}>
           Add Radio
-        </button>
+        </button> */}
+        {/* <button className="navbar-buttons" onClick={handleClickedAddCheckBox}>
+          Add CheckBox
+        </button> */}
+        <AskAi onRequest={handleAiRequest}></AskAi>
       </Navbar>
       <Form>
-        {Object.entries(sectionContent).map(([sectionId, section]) => (
-          <div key={sectionId}>
+        {sections.map((section) => (
+          <div key={section.sectionId || "fallback-key"}>
             <h3 className="section-title">{section.title}</h3>
-            {Object.entries(section.questions).map(([questionId, type]) => (
+            {section.questions?.map((question) => (
               <Question
-                key={questionId}
-                id={questionId}
-                type={type}
-                removeOption={handleRemoveOption}
+                key={question.questionId}
+                id={question.questionId}
+                type={question.type}
+                question={question.question}
+                questionOptions={question.values}
+                // removeOption={handleRemoveOption}
               />
             ))}
           </div>
