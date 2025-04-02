@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import BaseQuestionProps from './type'
 
 
 export default function Section() {

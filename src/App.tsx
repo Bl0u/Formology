@@ -3,19 +3,15 @@ import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar";
 import React, { useState } from "react";
-import { generateUniqueId } from "./Components/NavbarButtons/type.ts";
+import { generateUniqueId, QuestionFormat } from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
 
-interface Question {
-  questionId: string;
-  type: string;
-  question?: string;
-  values?: string[] | null;
-}
+// used to efficiently store the content of the form
+
 interface SectionContent {
   title?: string;
   sectionId?: string;
-  questions?: Question[];
+  questions?: QuestionFormat[];
 }
 
 function App() {
@@ -53,7 +49,7 @@ function App() {
                           "options": ["Option1", "Option2", "Option3"]
                         },
                         {
-                          "type": "textarea",
+                          "type": "text",
                           "question": "Example open-ended question?"
                         }
                       ]
@@ -113,23 +109,7 @@ function App() {
     }
   };
 
-  // const handleClickedAddCheckBox = () => {
-  //   if (!currSectionId) return;
-  //   setSectionContent((prev) => {
-  //     const currCheckBoxId = generateUniqueId();
-  //     const newContent = { ...prev };
-  //     newContent[currSectionId] = {
-  //       ...newContent[currSectionId],
-  //       questions: {
-  //         ...newContent[currSectionId].questions,
-  //         [currCheckBoxId]: "checkbox",
-  //       },
-  //     };
-  //     return newContent;
-  //   });
-  // };
-
-  const handleClickAddText = () => {
+  const handleClickAddQuestion = (questionType: string) => {
     if (!currSectionId) return;
   
     setSections(prevSections => {
@@ -139,7 +119,7 @@ function App() {
             ...(section.questions || []),
             {
               questionId: generateUniqueId(),
-              type: "text",
+              type: questionType,
               question: "",
               values: [],
             }
@@ -150,24 +130,8 @@ function App() {
       });
     });
   };
-
-  // const handleClickAddRadio = () => {
-  //   if (!currSectionId) return;
-
-  //   setSectionContent((prev) => {
-  //     const newContent = { ...prev };
-  //     const currRadioId = generateUniqueId();
-  //     newContent[currSectionId] = {
-  //       ...newContent[currSectionId],
-  //       questions: {
-  //         ...newContent[currSectionId].questions,
-  //         [currRadioId]: "radio",
-  //       },
-  //     };
-
-  //     return newContent;
-  //   });
-  // };
+  
+  
 
   // const handleRemoveOption = (id: string) => {
   //   setSectionContent((prev) => {
@@ -218,33 +182,37 @@ function App() {
         <button className="navbar-buttons" onClick={handleClickStartSection}>
           {btnName}
         </button>
-        <button className="navbar-buttons" onClick={handleClickAddText}>
+        <button className="navbar-buttons" onClick={() => {handleClickAddQuestion('text')}}>
           Add Text
         </button>
-        {/* <button className="navbar-buttons" onClick={handleClickAddRadio}>
+        <button className="navbar-buttons" onClick={() => {handleClickAddQuestion('radio')}}>
           Add Radio
-        </button> */}
-        {/* <button className="navbar-buttons" onClick={handleClickedAddCheckBox}>
+        </button>
+        <button className="navbar-buttons" onClick={() => {handleClickAddQuestion('checkbox')}}>
           Add CheckBox
-        </button> */}
+        </button>
         <AskAi onRequest={handleAiRequest}></AskAi>
       </Navbar>
       <Form>
-        {sections.map((section) => (
+        {sections.map((section) => { 
+          // console.log(section) ;
+          return (
           <div key={section.sectionId || "fallback-key"}>
             <h3 className="section-title">{section.title}</h3>
-            {section.questions?.map((question) => (
+            {section.questions?.map((question) => {
+              // console.log(question) ; // quesiton.values ;
+              // console.log(question.type) ;
+              // console.log(question.values) ;
+              return (
               <Question
                 key={question.questionId}
-                id={question.questionId}
-                type={question.type}
-                question={question.question}
-                questionOptions={question.values}
+                questionDetails={question}
+
                 // removeOption={handleRemoveOption}
               />
-            ))}
+            )})}
           </div>
-        ))}
+        )})}
       </Form>
     </>
   );

@@ -1,10 +1,18 @@
 type QuestionType = 'text' | 'radio' | 'checkbox';
 
+export interface QuestionFormat {
+  questionId: string;
+  type: string;
+  question?: string;
+  values?: string[] | null;
+}
+
 interface BaseQuestionProps {
-  id: string; // Ensure ID is always a string
+  id?: string; // Ensure ID is always a string
   type?: QuestionType | string;
   question?: string;
   questionOptions?: string[] | null;
+  questionDetails: QuestionFormat ;
   removeOption?: (id: string) => void; // Make sure this is defined
 }
 
