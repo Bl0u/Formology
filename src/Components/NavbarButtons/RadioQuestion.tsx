@@ -59,7 +59,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
       answer: choice,
     }));
   };
-  console.log(question) ;
+  // console.log(question) ;
 
   return (
     <div

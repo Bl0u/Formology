@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import TextQuestion from './TextQuestion';
 import {BaseQuestionProps} from "./type";
 import RadioQuestion from './RadioQuestion';

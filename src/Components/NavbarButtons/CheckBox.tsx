@@ -53,7 +53,7 @@ export default function SelectOption(props: BaseQuestionProps) {
       };
     })
   } ;
-  console.log(question) ;
+  // console.log(question) ;
   return (
     <>
       <div

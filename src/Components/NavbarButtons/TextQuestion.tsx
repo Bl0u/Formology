@@ -9,7 +9,6 @@ export default function TextQuestion(props: BaseQuestionProps) {
     setQuestion(props.questionDetails);
   }, [props.questionDetails]);
 
-  console.log(question);
   return (
     <div>
       {/* question box */}
@@ -17,9 +16,7 @@ export default function TextQuestion(props: BaseQuestionProps) {
         onChange={(e) => {
           setQuestion((prev) => {
             const newQuestion = {...prev} ;
-              // console.log(newQuestion);
               newQuestion.question = e.target.value ;
-              console.log(newQuestion.question);
             return newQuestion
           })
         }}
@@ -37,10 +34,8 @@ export default function TextQuestion(props: BaseQuestionProps) {
             
             const newQuestion = {...prev} ;
             newQuestion.answer = e.target.value ;
-            // console.log(newQuestion);            
             return newQuestion ;
           })
-          // console.log(e.target.value);
         }}
         placeholder="Enter your text here..."
         rows={4}

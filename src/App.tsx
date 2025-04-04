@@ -5,10 +5,10 @@ import Navbar from "./Components/NavbarButtons/Navbar";
 import { useState } from "react";
 import { generateUniqueId, QuestionFormat } from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
-
+import { sendToDB } from "./Components/DB/Database.tsx";
 // used to efficiently store the content of the form
 
-interface SectionContent {
+export interface SectionContent {
   title?: string;
   sectionId?: string;
   questions?: QuestionFormat[];
@@ -77,9 +77,10 @@ function App() {
       }
 
       if (Array.isArray(parsed.fields)) {
+        const sectionid_hope = generateUniqueId() ;
         const aiSection: SectionContent = {
           title: parsed.sectionName || "AI Generated Section",
-          sectionId: generateUniqueId(),
+          sectionId: sectionid_hope,
           questions: parsed.fields.map(
             (field: {
               type: "text" | "radio" | "checkbox";
@@ -87,6 +88,7 @@ function App() {
               options?: string[];
             }) => {
               return {
+                sectionId: sectionid_hope,
                 questionId: generateUniqueId(),
                 type: field.type,
                 question: field.question,
@@ -99,6 +101,9 @@ function App() {
           setCurrSectionId(aiSection.sectionId); // Fixed: id to sectionId
         }
         setSections((prev) => [...prev, aiSection]);
+        // console.log('send aiSection to php file niggas');
+        // console.log(aiSection);
+        sendToDB(aiSection) ;
       } else {
         console.warn("AI response did not contain a valid 'fields' array.");
       }
@@ -116,6 +121,7 @@ function App() {
           const updatedQuestions = [
             ...(section.questions || []),
             {
+              sectionId: section.sectionId,
               questionId: generateUniqueId(),
               type: questionType,
               question: "",

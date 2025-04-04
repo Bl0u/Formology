@@ -1,12 +1,13 @@
 export interface QuestionFormat {
   questionId: string;
+  sectionId: string ;
   type: string;
   question?: string;
   values?: string[] | null;
   answer?: string | string[] ;
 }
 
-export interface BaseQuestionProps {
+export  interface BaseQuestionProps {
   sectionId?: string ;
   questionDetails: QuestionFormat ;
   removeOption?: (id: string) => void; // Make sure this is defined
