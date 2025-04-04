@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BaseQuestionProps, generateUniqueId, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
+import { BaseQuestionProps, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
 
 export default function RadioQuestion(props: BaseQuestionProps) {
 

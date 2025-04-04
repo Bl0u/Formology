@@ -2,7 +2,7 @@ import "./App.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar";
-import React, { useState } from "react";
+import { useState } from "react";
 import { generateUniqueId, QuestionFormat } from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
 
@@ -148,7 +148,7 @@ function App() {
       if (!hope) return;
 
       const existingSectionId = Object.keys({ sections }).find(
-        (sectionId) => sectionContent.title === hope
+        (_) => sectionContent.title === hope
       );
 
       if (existingSectionId) {

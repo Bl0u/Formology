@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 // import BaseQuestionProps {QuestionFormat} from "./type.ts";
-import  {BaseQuestionProps, generateUniqueId, QuestionFormat } from "./type.ts";
+import  {BaseQuestionProps, QuestionFormat } from "./type.ts";
 
 export default function TextQuestion(props: BaseQuestionProps) {
   const [question, setQuestion] = useState<QuestionFormat>({} as QuestionFormat);
-  const [text, setText] = useState("") ;
-  const [answer, setAnswer] = useState("") ;
 
   useEffect(() => {
     setQuestion(props.questionDetails);

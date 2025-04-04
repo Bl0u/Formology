@@ -5,10 +5,9 @@ export default function SelectOption(props: BaseQuestionProps) {
   const [question, setQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
-  const [selectedOption, setSelectedOption] = useState<string[] | null>(null);
   
   useEffect(() => {
-    setQuestion((prev) => props.questionDetails);
+    setQuestion(() => props.questionDetails);
   }, [props.questionDetails]); // it needs an array of dependancies
 
   
@@ -24,10 +23,9 @@ export default function SelectOption(props: BaseQuestionProps) {
 
   const removeChoice = (index: number) => {
     setQuestion((prev) => {
-      const newValues = prev.values?.filter((option, i) => i !== index)
+      const newValues = prev.values?.filter((_, i) => i !== index)
       return {...prev, values: newValues} ;
     })
-    // setOptions((prev) => prev.filter((_, i) => i != index));
   };
 
   const updateChoice = (index: number, value: string) => {
@@ -81,7 +79,6 @@ export default function SelectOption(props: BaseQuestionProps) {
               name={question.questionId}
               value={option}
               onChange={(e) => {
-                setSelectedOption((prev) => [...(prev ?? []), option]);
                 updateAnswer(e.target.value) ;
               }}
               disabled={!option}
