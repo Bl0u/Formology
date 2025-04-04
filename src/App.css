@@ -87,7 +87,9 @@ body{
   gap: 10px;  /* Spacing between buttons */
   margin-left: auto;  /* Pushes buttons to the right */
 }
-
+.section-title{
+  color: red ;
+}
 .hope{
   width: 50px;
   height: 50px;

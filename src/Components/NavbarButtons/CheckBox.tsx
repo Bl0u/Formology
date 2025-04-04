@@ -1,28 +1,61 @@
-import BaseQuestionProps from "./type";
-import { useState } from "react";
+import { BaseQuestionProps, QuestionFormat } from "./type";
+import { useEffect, useState } from "react";
 
 export default function SelectOption(props: BaseQuestionProps) {
-  const [options, setOptions] = useState<string[]>([]);
+  const [question, setQuestion] = useState<QuestionFormat>(
+    {} as QuestionFormat
+  );
   const [selectedOption, setSelectedOption] = useState<string[] | null>(null);
+  
+  useEffect(() => {
+    setQuestion((prev) => props.questionDetails);
+  }, [props.questionDetails]); // it needs an array of dependancies
 
+  
   const addOption = () => {
-    setOptions((prev) => {
-      return [...prev, ""] ;
+    setQuestion((prev) => {
+      const newQuestion = {...prev} ; // this means spread the prev var props in newQuestion
+      const newOptions = [...newQuestion.values??[], ""]
+      return {...newQuestion, values: newOptions} ;
     })
-  }
-  const removeChoice = (index: number) => {
-    const currOption = options[index] ;
-    setOptions((prev) => prev.filter((_, i) => i != index))
-  }
 
+    
+  };
+
+  const removeChoice = (index: number) => {
+    setQuestion((prev) => {
+      const newValues = prev.values?.filter((option, i) => i !== index)
+      return {...prev, values: newValues} ;
+    })
+    // setOptions((prev) => prev.filter((_, i) => i != index));
+  };
 
   const updateChoice = (index: number, value: string) => {
-    const newOptions = [...options] ;
-    newOptions[index] = value ;
-    setOptions(newOptions) ;
-  }
+    setQuestion((prev) => {
+    const newQuestion = {...prev} ;
+    let newValues = newQuestion.values ?? []
+    newValues[index] = value ;
+    return {...newQuestion, values: newValues} ;
+    })
+  };
 
+  const updateQuestion = (value: string) => {
+    setQuestion((prev) => {
+      const newQuestion = {...prev} ;
+      let userQuestion = value ;
+      return {...newQuestion, question:userQuestion} ;
+    })
+  } ;
 
+  const updateAnswer = (value: string) => {
+    setQuestion((prev) => {
+      return {
+        ...prev,
+        answer: [...(prev.answer??[]), value],
+      };
+    })
+  } ;
+  console.log(question) ;
   return (
     <>
       <div
@@ -32,10 +65,12 @@ export default function SelectOption(props: BaseQuestionProps) {
           marginBottom: "10px",
         }}
       >
-        <textarea value={props.question} rows={1} cols={50}></textarea>
+        <textarea value={question.question ?? ""} onChange={(e) => {
+        updateQuestion(e.target.value) ;
+        }} rows={1} cols={50}></textarea>
         <br />
 
-        {options.map((option, index) => (
+        {question.values?.map((option, index) => (
           <div
             key={index}
             style={{ display: "flex", alignItems: "center", gap: "10px" }}
@@ -43,11 +78,11 @@ export default function SelectOption(props: BaseQuestionProps) {
             {/* Option content here */}
             <input
               type="checkbox"
-              name={props.id}
+              name={question.questionId}
               value={option}
               onChange={(e) => {
-                setSelectedOption([...options, option])
-                // console.log(e.target) ;
+                setSelectedOption((prev) => [...(prev ?? []), option]);
+                updateAnswer(e.target.value) ;
               }}
               disabled={!option}
             />
@@ -89,7 +124,7 @@ export default function SelectOption(props: BaseQuestionProps) {
             typeof props.removeOption
           );
           if (props.removeOption) {
-            props.removeOption(props.id);
+            props.removeOption(question.questionId);
           } else {
             console.error("removeOption function is undefined");
           }

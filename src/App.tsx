@@ -75,7 +75,6 @@ function App() {
         console.error("Failed to parse AI response:", parseError);
         parsed = { sectionName: "AI Generated Section", fields: [] };
       }
-      // console.log(parsed);
 
       if (Array.isArray(parsed.fields)) {
         const aiSection: SectionContent = {
@@ -96,7 +95,6 @@ function App() {
             }
           ),
         };
-        // console.log(aiSection) ;
         if (aiSection.sectionId) {
           setCurrSectionId(aiSection.sectionId); // Fixed: id to sectionId
         }
@@ -131,8 +129,6 @@ function App() {
     });
   };
   
-  
-
   // const handleRemoveOption = (id: string) => {
   //   setSectionContent((prev) => {
   //     const newContent = { ...prev };
@@ -147,6 +143,7 @@ function App() {
 
   const handleClickStartSection = () => {
     if (btnName === "Start Section") {
+
       const hope = prompt("Please provide the section name:");
       if (!hope) return;
 
@@ -194,20 +191,16 @@ function App() {
         <AskAi onRequest={handleAiRequest}></AskAi>
       </Navbar>
       <Form>
-        {sections.map((section) => { 
-          // console.log(section) ;
+        {sections.map((section) => {
           return (
           <div key={section.sectionId || "fallback-key"}>
             <h3 className="section-title">{section.title}</h3>
             {section.questions?.map((question) => {
-              // console.log(question) ; // quesiton.values ;
-              // console.log(question.type) ;
-              // console.log(question.values) ;
               return (
               <Question
-                key={question.questionId}
-                questionDetails={question}
-
+              key={question.questionId}
+              questionDetails={question}
+              sectionId={currSectionId??""}
                 // removeOption={handleRemoveOption}
               />
             )})}

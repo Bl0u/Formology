@@ -1,9 +1,15 @@
-import { useState } from "react";
-import BaseQuestionProps, { generateUniqueId, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
+import { useEffect, useState } from "react";
+import { BaseQuestionProps, generateUniqueId, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
 
 export default function RadioQuestion(props: BaseQuestionProps) {
-  console.log(props.questionDetails);
-  const [question, setQuestion] = useState<QuestionFormat>({} as QuestionFormat);
+
+  const [question, setQuestion] = useState<QuestionFormat>(
+    {} as QuestionFormat
+  );
+
+  useEffect(() => {
+    setQuestion(props.questionDetails);
+  }, [props.questionDetails]);
 
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
 
@@ -17,25 +23,43 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   };
 
   // Function to update a specific choice
-  // const updateChoice = (index: number, value: string) => {
-  //   const updatedChoices = [...choices];
-  //   updatedChoices[index] = value;
-  //   setChoices(updatedChoices);
-  // };
+  const updateChoice = (index: number, value: string) => {
 
-  // Function to remove a choice
-  // const removeChoice = (index: number) => {
-  //   const choiceToRemove = choices[index];
+    setQuestion((prev) => {
+      const newValues = [...(prev.values ?? [])];
+      newValues[index] = value;
+      const newQuestion = { ...prev, values: newValues };
+      return newQuestion;
+    });
 
-  //   // Remove the selected choice only if it's being deleted
-  //   if (choiceToRemove === selectedChoice) {
-  //     setSelectedChoice(null);
-  //   }
+  };
 
-  //   // Remove choice from the list
-  //   setChoices((prevChoices) => prevChoices.filter((_, i) => i !== index));
-  // };
-  // console.log(choices) ;
+  const removeChoice = (index: number) => {
+    // Remove choice from the list
+    setQuestion((prev) => {
+      return {...prev, values: prev?.values?.filter((_, i) => i !== index)} ;
+    })
+    // setQuestion((prev) => {
+    //   const hope = prev?.values?.filter((option, i) => i !== index) ;
+      
+    //   return {...prev, values: hope} ;
+    // })
+  };
+
+  const updateQuestion = (value: string) => {
+    setQuestion((prev) => {
+      let newQuestionValue = prev.question ?? ""; // this is teh quetion type of string
+      newQuestionValue = value; // this should hold the new value of the question currently typed
+      return { ...prev, question: newQuestionValue };
+    });
+  };
+  const handleChoiceChange = (choice: string) => {
+    setQuestion((prev) => ({
+      ...prev,
+      answer: choice,
+    }));
+  };
+  console.log(question) ;
 
   return (
     <div
@@ -46,12 +70,18 @@ export default function RadioQuestion(props: BaseQuestionProps) {
       }}
     >
       {/* Question Textarea */}
-      <textarea value={props.question} rows={1} cols={50}></textarea>
+      <textarea
+        value={question.question ?? ""}
+        rows={1}
+        cols={50}
+        onChange={(e) => {
+          updateQuestion(e.target.value);
+        }}
+      ></textarea>
       <br />
 
       {/* Loop through choices dynamically */}
-      {props.questionOptions?.map((choice, index) => {
-        // console.log("here", choice);
+      {question.values?.map((choice, index) => {
         return (
           <div
             key={index}
@@ -60,24 +90,29 @@ export default function RadioQuestion(props: BaseQuestionProps) {
             {/* Selectable radio button with a unique group name */}
             <input
               type="radio"
-              name={props.questionDetails.questionId} // Ensures all options in this question are in the same group
+              name={question.questionId} // Ensures all options in this question are in the same group
               value={choice}
               checked={selectedChoice === choice}
-              onChange={() => setSelectedChoice(choice)}
+              onChange={() => {
+                setSelectedChoice(choice);
+                handleChoiceChange(choice);
+                
+              }}
               disabled={!choice} // Disable selection if input is empty
             />
 
             {/* Editable text input */}
             <input
+              key={index}
               type="text"
               value={choice}
-              // onChange={(e) => updateChoice(index, e.target.value)}
+              onChange={(e) => updateChoice(index, e.target.value)}
               placeholder={`Choice ${index + 1}`}
             />
 
-            {/* Remove button */}
+            {/* Remove button a radio choice */}
             <button
-              // onClick={() => removeChoice(index)}
+              onClick={() => removeChoice(index)}
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)", // 70% transparent black
                 color: "white",
@@ -99,9 +134,10 @@ export default function RadioQuestion(props: BaseQuestionProps) {
       })}
 
       <br />
-      {/* Button to Add More Choices */}
+      {/* Button to Add More radio choices */}
       <button onClick={addChoice}>Add Choice</button>
 
+      {/* remove the entire radio question component */}
       <button
         onClick={() => {
           console.log(
@@ -109,7 +145,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
             typeof props.removeOption
           );
           if (props.removeOption) {
-            props.removeOption(props.questionDetails.questionId);
+            props.removeOption(question?.questionId);
           } else {
             console.error("removeOption function is undefined");
           }
