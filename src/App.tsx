@@ -2,8 +2,11 @@ import "./App.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar";
-import { useState } from "react";
-import { generateUniqueId, QuestionFormat } from "./Components/NavbarButtons/type.ts";
+import { useState, createContext } from "react";
+import {
+  generateUniqueId,
+  QuestionFormat,
+} from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
 import { sendToDB } from "./Components/DB/Database.tsx";
 // used to efficiently store the content of the form
@@ -13,6 +16,8 @@ export interface SectionContent {
   sectionId?: string;
   questions?: QuestionFormat[];
 }
+export const SectionContext = createContext({});
+// custom hooks to avoid initial value error
 
 function App() {
   const [sectionContent, setSectionContent] = useState<SectionContent>(
@@ -21,7 +26,34 @@ function App() {
   const [sections, setSections] = useState<SectionContent[]>([]);
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const [btnName, setBtnName] = useState("Start Section");
-
+  const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
+    
+    // Create a new array with the updated question
+    const updatedSections = sections?.map((section) => {
+  
+      // If this is not the section containing our question, return it unchanged
+      if (section.sectionId !== newQuestion.sectionId) {
+        return section;
+      }
+      
+      // Create a new section with updated questions
+      return {
+        ...section,
+        questions: section?.questions?.map((question) => {
+          // If this is our target question, return the new question
+          if (question.questionId === newQuestion.questionId) {
+            return newQuestion;
+          }
+          // Otherwise return the original question
+          return question;
+        })
+      };
+    });
+    
+    // Update the global state with the new sections
+    setSections(updatedSections);
+    
+  };
   const handleAiRequest = async (message: string) => {
     try {
       const response = await fetch(import.meta.env.VITE_API_URL, {
@@ -77,7 +109,7 @@ function App() {
       }
 
       if (Array.isArray(parsed.fields)) {
-        const sectionid_hope = generateUniqueId() ;
+        const sectionid_hope = generateUniqueId();
         const aiSection: SectionContent = {
           title: parsed.sectionName || "AI Generated Section",
           sectionId: sectionid_hope,
@@ -101,9 +133,7 @@ function App() {
           setCurrSectionId(aiSection.sectionId); // Fixed: id to sectionId
         }
         setSections((prev) => [...prev, aiSection]);
-        // console.log('send aiSection to php file niggas');
-        // console.log(aiSection);
-        sendToDB(aiSection) ;
+        sendToDB(aiSection);
       } else {
         console.warn("AI response did not contain a valid 'fields' array.");
       }
@@ -111,12 +141,13 @@ function App() {
       console.error("Failed to fetch AI response:", error);
     }
   };
-
+  // no need to update sections, any change in section automatically
+  // done in sections
   const handleClickAddQuestion = (questionType: string) => {
     if (!currSectionId) return;
-  
-    setSections(prevSections => {
-      return prevSections.map(section => {
+
+    setSections((prevSections) => {
+      return prevSections.map((section) => {
         if (section.sectionId === currSectionId) {
           const updatedQuestions = [
             ...(section.questions || []),
@@ -126,15 +157,16 @@ function App() {
               type: questionType,
               question: "",
               values: [],
-            }
+            },
           ];
           return { ...section, questions: updatedQuestions };
         }
+        setSectionContent(section);
         return section;
       });
     });
   };
-  
+
   // const handleRemoveOption = (id: string) => {
   //   setSectionContent((prev) => {
   //     const newContent = { ...prev };
@@ -149,7 +181,6 @@ function App() {
 
   const handleClickStartSection = () => {
     if (btnName === "Start Section") {
-
       const hope = prompt("Please provide the section name:");
       if (!hope) return;
 
@@ -179,19 +210,35 @@ function App() {
   };
 
   console.log(sections);
+  
   return (
     <>
       <Navbar>
         <button className="navbar-buttons" onClick={handleClickStartSection}>
           {btnName}
         </button>
-        <button className="navbar-buttons" onClick={() => {handleClickAddQuestion('text')}}>
+        <button
+          className="navbar-buttons"
+          onClick={() => {
+            handleClickAddQuestion("text");
+          }}
+        >
           Add Text
         </button>
-        <button className="navbar-buttons" onClick={() => {handleClickAddQuestion('radio')}}>
+        <button
+          className="navbar-buttons"
+          onClick={() => {
+            handleClickAddQuestion("radio");
+          }}
+        >
           Add Radio
         </button>
-        <button className="navbar-buttons" onClick={() => {handleClickAddQuestion('checkbox')}}>
+        <button
+          className="navbar-buttons"
+          onClick={() => {
+            handleClickAddQuestion("checkbox");
+          }}
+        >
           Add CheckBox
         </button>
         <AskAi onRequest={handleAiRequest}></AskAi>
@@ -199,19 +246,22 @@ function App() {
       <Form>
         {sections.map((section) => {
           return (
-          <div key={section.sectionId || "fallback-key"}>
-            <h3 className="section-title">{section.title}</h3>
-            {section.questions?.map((question) => {
-              return (
-              <Question
-              key={question.questionId}
-              questionDetails={question}
-              sectionId={currSectionId??""}
-                // removeOption={handleRemoveOption}
-              />
-            )})}
-          </div>
-        )})}
+            <div key={section.sectionId || "fallback-key"}>
+              <h3 className="section-title">{section.title}</h3>
+              {section.questions?.map((question) => {
+                return (
+                  <Question
+                    updateSectionsGlobalState={updateSectionsGlobalState}
+                    key={question.questionId}
+                    questionDetails={question}
+                    sectionId={currSectionId ?? ""}
+                    // removeOption={handleRemoveOption}
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
       </Form>
     </>
   );

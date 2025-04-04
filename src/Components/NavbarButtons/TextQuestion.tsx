@@ -1,26 +1,32 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import BaseQuestionProps {QuestionFormat} from "./type.ts";
 import  {BaseQuestionProps, QuestionFormat } from "./type.ts";
-
+import { SectionContext } from "../../App.tsx";
 export default function TextQuestion(props: BaseQuestionProps) {
-  const [question, setQuestion] = useState<QuestionFormat>({} as QuestionFormat);
+
+  const [textQuestion, setTextQuestion] = useState<QuestionFormat>({} as QuestionFormat);
+  
+  useEffect(() => {
+    
+    props.updateSectionsGlobalState(textQuestion) ;
+  }, [textQuestion])
 
   useEffect(() => {
-    setQuestion(props.questionDetails);
+    setTextQuestion(props.questionDetails);
   }, [props.questionDetails]);
-
+  const sectionContextGlobalState = useContext(SectionContext) ;
   return (
     <div>
       {/* question box */}
       <textarea
         onChange={(e) => {
-          setQuestion((prev) => {
+          setTextQuestion((prev) => {
             const newQuestion = {...prev} ;
               newQuestion.question = e.target.value ;
             return newQuestion
           })
         }}
-        value={(question.question?? "")}
+        value={(textQuestion.question?? "")}
         rows={1}
         cols={50}
       ></textarea>
@@ -30,7 +36,7 @@ export default function TextQuestion(props: BaseQuestionProps) {
       {/* clients response box */}
       <textarea
         onChange={(e) => {
-          setQuestion((prev) => {
+          setTextQuestion((prev) => {
             
             const newQuestion = {...prev} ;
             newQuestion.answer = e.target.value ;
@@ -50,7 +56,7 @@ export default function TextQuestion(props: BaseQuestionProps) {
             typeof props.removeOption
           );
           if (props.removeOption) {
-            props.removeOption(question?.questionId);
+            props.removeOption(textQuestion?.questionId);
           } else {
             console.error("removeOption function is undefined");
           }

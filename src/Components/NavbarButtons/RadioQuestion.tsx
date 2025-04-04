@@ -3,10 +3,12 @@ import { BaseQuestionProps, QuestionFormat } from "./type.ts"; // Ensure this im
 
 export default function RadioQuestion(props: BaseQuestionProps) {
 
-  const [question, setQuestion] = useState<QuestionFormat>(
+  const [radioQuestion, setQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
-
+  useEffect(() => {
+    props.updateSectionsGlobalState(radioQuestion) ;
+  }, [radioQuestion])  
   useEffect(() => {
     setQuestion(props.questionDetails);
   }, [props.questionDetails]);
@@ -59,7 +61,6 @@ export default function RadioQuestion(props: BaseQuestionProps) {
       answer: choice,
     }));
   };
-  // console.log(question) ;
 
   return (
     <div
@@ -71,7 +72,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
     >
       {/* Question Textarea */}
       <textarea
-        value={question.question ?? ""}
+        value={radioQuestion.question ?? ""}
         rows={1}
         cols={50}
         onChange={(e) => {
@@ -81,7 +82,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
       <br />
 
       {/* Loop through choices dynamically */}
-      {question.values?.map((choice, index) => {
+      {radioQuestion.values?.map((choice, index) => {
         return (
           <div
             key={index}
@@ -90,7 +91,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
             {/* Selectable radio button with a unique group name */}
             <input
               type="radio"
-              name={question.questionId} // Ensures all options in this question are in the same group
+              name={radioQuestion.questionId} // Ensures all options in this question are in the same group
               value={choice}
               checked={selectedChoice === choice}
               onChange={() => {
@@ -145,7 +146,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
             typeof props.removeOption
           );
           if (props.removeOption) {
-            props.removeOption(question?.questionId);
+            props.removeOption(radioQuestion?.questionId);
           } else {
             console.error("removeOption function is undefined");
           }

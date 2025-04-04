@@ -11,6 +11,7 @@ export  interface BaseQuestionProps {
   sectionId?: string ;
   questionDetails: QuestionFormat ;
   removeOption?: (id: string) => void; // Make sure this is defined
+  updateSectionsGlobalState: (newQuestion: QuestionFormat) => void;
 }
 
 // Function to generate a random unique ID

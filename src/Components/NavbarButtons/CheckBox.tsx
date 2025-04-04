@@ -2,10 +2,12 @@ import { BaseQuestionProps, QuestionFormat } from "./type";
 import { useEffect, useState } from "react";
 
 export default function SelectOption(props: BaseQuestionProps) {
-  const [question, setQuestion] = useState<QuestionFormat>(
+  const [checkboxQuestion, setQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
-  
+  useEffect(() => {
+    props.updateSectionsGlobalState(checkboxQuestion) ;
+  }, [checkboxQuestion])  
   useEffect(() => {
     setQuestion(() => props.questionDetails);
   }, [props.questionDetails]); // it needs an array of dependancies
@@ -53,7 +55,6 @@ export default function SelectOption(props: BaseQuestionProps) {
       };
     })
   } ;
-  // console.log(question) ;
   return (
     <>
       <div
@@ -63,12 +64,12 @@ export default function SelectOption(props: BaseQuestionProps) {
           marginBottom: "10px",
         }}
       >
-        <textarea value={question.question ?? ""} onChange={(e) => {
+        <textarea value={checkboxQuestion.question ?? ""} onChange={(e) => {
         updateQuestion(e.target.value) ;
         }} rows={1} cols={50}></textarea>
         <br />
 
-        {question.values?.map((option, index) => (
+        {checkboxQuestion.values?.map((option, index) => (
           <div
             key={index}
             style={{ display: "flex", alignItems: "center", gap: "10px" }}
@@ -76,7 +77,7 @@ export default function SelectOption(props: BaseQuestionProps) {
             {/* Option content here */}
             <input
               type="checkbox"
-              name={question.questionId}
+              name={checkboxQuestion.questionId}
               value={option}
               onChange={(e) => {
                 updateAnswer(e.target.value) ;
@@ -121,7 +122,7 @@ export default function SelectOption(props: BaseQuestionProps) {
             typeof props.removeOption
           );
           if (props.removeOption) {
-            props.removeOption(question.questionId);
+            props.removeOption(checkboxQuestion.questionId);
           } else {
             console.error("removeOption function is undefined");
           }
