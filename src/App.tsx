@@ -2,20 +2,18 @@ import "./App.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import {
   generateUniqueId,
   QuestionFormat,
+  SectionContent,
+  FormContent
 } from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
 import { sendToDB } from "./Components/DB/Database.tsx";
 // used to efficiently store the content of the form
 
-export interface SectionContent {
-  title?: string;
-  sectionId?: string;
-  questions?: QuestionFormat[];
-}
+
 export const SectionContext = createContext({});
 // custom hooks to avoid initial value error
 
@@ -24,8 +22,18 @@ function App() {
     {} as SectionContent
   );
   const [sections, setSections] = useState<SectionContent[]>([]);
+  const [form, setForm] = useState<FormContent>({
+    formId: generateUniqueId(), 
+  sections: [], 
+  }) ;
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const [btnName, setBtnName] = useState("Start Section");
+
+  useEffect(() => {
+    console.log('form has been changed');
+    
+    setForm((prev) => ({...prev, sections: sections})) ;
+  }, [sections])
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
     
     // Create a new array with the updated question
@@ -56,6 +64,8 @@ function App() {
   };
   const handleAiRequest = async (message: string) => {
     try {
+      // Check if the message contains a request for multiple sections
+      // Parse the message to extract requested structure
       const response = await fetch(import.meta.env.VITE_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,78 +74,99 @@ function App() {
             {
               parts: [
                 {
-                  text: `Generate a structured JSON form with an appropriate section name. 
-                  - The form should focus on '${message}'.
-                  - Include only JSON output with:
-                    {
-                      "sectionName": "Suggested Section Title",
-                      "fields": [
-                        {
-                          "type": "radio",
-                          "question": "Example radio question?",
-                          "options": ["Option1", "Option2"]
-                        },
-                        {
-                          "type": "checkbox",
-                          "question": "Example checkbox question?",
-                          "options": ["Option1", "Option2", "Option3"]
-                        },
-                        {
-                          "type": "text",
-                          "question": "Example open-ended question?"
-                        }
-                      ]
-                    }
-                  - Ensure that the JSON contains a "sectionName" and a "fields" array.
-                  - Do not wrap the JSON inside markdown formatting.
-                  - Return only JSON, no explanations.`,
+                  text: `Generate a structured JSON form based on the following requirements: '${message}'.
+                  
+                  Current Date and Time: ${new Date().toISOString().slice(0, 19).replace('T', ' ')}
+                  Current User: Bl0u
+                  
+                  - Output should be a valid JSON with this structure:
+                  {
+                    "sections": [
+                      {
+                        "sectionName": "Unique Section Title 1",
+                        "fields": [
+                          {
+                            "type": "radio",
+                            "question": "Example radio question?",
+                            "options": ["Option1", "Option2"]
+                          },
+                          {
+                            "type": "checkbox",
+                            "question": "Example checkbox question?",
+                            "options": ["Option1", "Option2", "Option3"]
+                          },
+                          {
+                            "type": "text",
+                            "question": "Example open-ended question?"
+                          }
+                        ]
+                      },
+                      {
+                        "sectionName": "Unique Section Title 2",
+                        "fields": [...]
+                      }
+                    ]
+                  }
+                  
+                  - If the user requests specific sections (e.g., "3 sections"), create exactly that many sections
+                  - If the user specifies question types (e.g., "2 text, 3 checkbox, 1 radio"), follow those counts exactly
+                  - Each section must have a unique title relevant to the form topic
+                  - Each question should be meaningful and related to its section
+                  - Return only JSON, no explanations or markdown
+                  - Ensure the output is properly formatted as a valid JSON object`,
                 },
               ],
             },
           ],
         }),
       });
-
+  
       const data = await response.json();
       let aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      
+      // Clean up the response to ensure it's valid JSON
       aiText = aiText.replace(/```json|```/g, "").trim();
-
+  
       let parsed;
       try {
         parsed = JSON.parse(aiText);
       } catch (parseError) {
         console.error("Failed to parse AI response:", parseError);
-        parsed = { sectionName: "AI Generated Section", fields: [] };
+        parsed = { sections: [] };
       }
-
-      if (Array.isArray(parsed.fields)) {
-        const sectionid_hope = generateUniqueId();
-        const aiSection: SectionContent = {
-          title: parsed.sectionName || "AI Generated Section",
-          sectionId: sectionid_hope,
-          questions: parsed.fields.map(
-            (field: {
-              type: "text" | "radio" | "checkbox";
-              question: string;
-              options?: string[];
-            }) => {
-              return {
-                sectionId: sectionid_hope,
-                questionId: generateUniqueId(),
-                type: field.type,
-                question: field.question,
-                values: field.options || null,
-              };
-            }
-          ),
-        };
-        if (aiSection.sectionId) {
-          setCurrSectionId(aiSection.sectionId); // Fixed: id to sectionId
+  
+      // Check if we have a sections array in the response
+      if (parsed.sections && Array.isArray(parsed.sections)) {
+        // Convert each AI section to your application's SectionContent format
+        const newSections: SectionContent[] = parsed.sections.map((aiSection: any) => {
+          const sectionId = generateUniqueId();
+          
+          return {
+            title: aiSection.sectionName || "AI Generated Section",
+            sectionId: sectionId,
+            questions: Array.isArray(aiSection.fields) 
+              ? aiSection.fields.map((field: any) => ({
+                  sectionId: sectionId,
+                  questionId: generateUniqueId(),
+                  type: field.type || "text",
+                  question: field.question || "Generated Question",
+                  values: field.options || null,
+                }))
+              : [],
+          };
+        });
+  
+        // Add all the new sections to the existing ones
+        setSections(prev => [...prev, ...newSections]);
+        
+        // Set the current section ID to the first one generated, if any sections were created
+        if (newSections.length > 0) {
+          setCurrSectionId(newSections[0].sectionId);
         }
-        setSections((prev) => [...prev, aiSection]);
-        sendToDB(aiSection);
+        
+        console.log(`Generated ${newSections.length} sections from AI request`);
       } else {
-        console.warn("AI response did not contain a valid 'fields' array.");
+        console.warn("AI response did not contain a valid 'sections' array.");
       }
     } catch (error) {
       console.error("Failed to fetch AI response:", error);
@@ -167,17 +198,18 @@ function App() {
     });
   };
 
-  // const handleRemoveOption = (id: string) => {
-  //   setSectionContent((prev) => {
-  //     const newContent = { ...prev };
-  //     Object.keys(newContent).forEach((sectionId) => {
-  //       if (newContent[sectionId].questions[id]) {
-  //         delete newContent[sectionId].questions[id];
-  //       }
-  //     });
-  //     return newContent;
-  //   });
-  // };
+  const handleRemoveOption = (id: string) => {
+
+    setSections((prev) => {
+      const newSections = prev.map(section => ({
+        ...section, 
+        questions: section.questions?.filter((question, index) =>
+        question.questionId !== id)
+      }))
+      return newSections ;
+    }) ;
+
+  };
 
   const handleClickStartSection = () => {
     if (btnName === "Start Section") {
@@ -209,7 +241,7 @@ function App() {
     }
   };
 
-  console.log(sections);
+  console.log(form);
   
   return (
     <>
@@ -241,6 +273,13 @@ function App() {
         >
           Add CheckBox
         </button>
+        <button
+        onClick={() => {
+          sendToDB(form) ;
+        }}
+        >
+          Build Form
+        </button>
         <AskAi onRequest={handleAiRequest}></AskAi>
       </Navbar>
       <Form>
@@ -255,7 +294,7 @@ function App() {
                     key={question.questionId}
                     questionDetails={question}
                     sectionId={currSectionId ?? ""}
-                    // removeOption={handleRemoveOption}
+                    removeOption={handleRemoveOption}
                   />
                 );
               })}
