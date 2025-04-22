@@ -1,0 +1,50 @@
+.input-container > button {
+    margin-top: 10px;
+    align-self: center;
+  }
+  
+  .inputChoices {
+    background-color: lightblue;
+    display: block;
+    width: 100%;
+    height: 40px;
+    border-radius: 100px;
+    padding-left: 40px;
+    padding-right: 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  .checkBoxButton, .radioButton {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    margin: 0;
+  }
+  
+  .input-checkbox-container {
+    position: relative;
+    width: 400px;
+    max-width: 80%; /* Prevent it from being too wide on small screens */
+  }
+  
+  .choice-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    width: 100%;
+    justify-content: center; /* Center the content horizontally */
+  }
+  
+  /* Style specifically for radio buttons */
+  .radioButton {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    margin: 0;
+  }

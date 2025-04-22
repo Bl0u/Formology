@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { BaseQuestionProps, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
+import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.tsx";
+import "../CSS/RadioQuestion.css";
+import { Trash2 } from "lucide-react";
 
 export default function RadioQuestion(props: BaseQuestionProps) {
-
   const [radioQuestion, setQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
   useEffect(() => {
-    props.updateSectionsGlobalState(radioQuestion) ;
-  }, [radioQuestion])  
+    props.updateSectionsGlobalState(radioQuestion);
+  }, [radioQuestion]);
   useEffect(() => {
     setQuestion(props.questionDetails);
   }, [props.questionDetails]);
@@ -26,26 +28,19 @@ export default function RadioQuestion(props: BaseQuestionProps) {
 
   // Function to update a specific choice
   const updateChoice = (index: number, value: string) => {
-
     setQuestion((prev) => {
       const newValues = [...(prev.values ?? [])];
       newValues[index] = value;
       const newQuestion = { ...prev, values: newValues };
       return newQuestion;
     });
-
   };
 
   const removeChoice = (index: number) => {
-    // Remove choice from the list
     setQuestion((prev) => {
-      return {...prev, values: prev?.values?.filter((_, i) => i !== index)} ;
-    })
-    // setQuestion((prev) => {
-    //   const hope = prev?.values?.filter((option, i) => i !== index) ;
-      
-    //   return {...prev, values: hope} ;
-    // })
+      return { ...prev, values: prev?.values?.filter((_, i) => i !== index) };
+    });
+
   };
 
   const updateQuestion = (value: string) => {
@@ -70,103 +65,86 @@ export default function RadioQuestion(props: BaseQuestionProps) {
         marginBottom: "10px",
       }}
     >
+      <ToggleSwitch
+          label="move-me"
+          questionId={radioQuestion?.questionId}
+        />
+        <button className="TrashButton">
+          <Trash2
+            className="trashPosition"
+            onClick={() => {
+              if (props.removeOption) {
+                props.removeOption(radioQuestion?.questionId);
+              }
+            }}
+            size={18}
+            color="#f44336"
+          />
+        </button>
       {/* Question Textarea */}
       <textarea
+        className="textareaQuestion"
+        onChange={(e) => {
+          setQuestion((prev) => {
+            const newQuestion = { ...prev };
+            newQuestion.question = e.target.value;
+            return newQuestion;
+          });
+        }}
         value={radioQuestion.question ?? ""}
         rows={1}
-        cols={50}
-        onChange={(e) => {
-          updateQuestion(e.target.value);
-        }}
+        cols={40}
+        placeholder="Enter Question Here"
       ></textarea>
       <br />
 
       {/* Loop through choices dynamically */}
-      {radioQuestion.values?.map((choice, index) => {
-        return (
-          <div
-            key={index}
-            style={{ display: "flex", alignItems: "center", gap: "10px" }}
-          >
-            {/* Selectable radio button with a unique group name */}
+      {radioQuestion.values?.map((choice, index) => (
+        <div key={index} className="choice-container">
+          <div className="input-checkbox-container">
             <input
+              className="inputChoices"
+              type="text"
+              value={choice}
+              onChange={(e) => updateChoice(index, e.target.value)}
+              placeholder={`Enter option number ${index + 1}`}
+            />
+            <input
+              className="radioButton"
               type="radio"
-              name={radioQuestion.questionId} // Ensures all options in this question are in the same group
+              name={radioQuestion.questionId}
               value={choice}
               checked={selectedChoice === choice}
               onChange={() => {
                 setSelectedChoice(choice);
                 handleChoiceChange(choice);
-                
               }}
-              disabled={!choice} // Disable selection if input is empty
+              disabled={!choice}
             />
-
-            {/* Editable text input */}
-            <input
-              key={index}
-              type="text"
-              value={choice}
-              onChange={(e) => updateChoice(index, e.target.value)}
-              placeholder={`Choice ${index + 1}`}
-            />
-
-            {/* Remove button a radio choice */}
-            <button
-              onClick={() => removeChoice(index)}
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.3)", // 70% transparent black
-                color: "white",
-                border: "none",
-                borderRadius: "50%",
-                width: "20px",
-                height: "20px",
-                fontSize: "12px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
-            >
-              ✖
-            </button>
           </div>
-        );
-      })}
 
+          <button
+            onClick={() => removeChoice(index)}
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.3)",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            ✖
+          </button>
+        </div>
+      ))}
       <br />
-      {/* Button to Add More radio choices */}
       <button onClick={addChoice}>Add Choice</button>
-
-      {/* remove the entire radio question component */}
-      <button
-        onClick={() => {
-          console.log(
-            "Button clicked, removeOption:",
-            typeof props.removeOption
-          );
-          if (props.removeOption) {
-            props.removeOption(radioQuestion?.questionId);
-          } else {
-            console.error("removeOption function is undefined");
-          }
-        }}
-        style={{
-          backgroundColor: "rgba(0, 0, 0, 0.3)", // 70% transparent black
-          color: "white",
-          border: "none",
-          borderRadius: "50%",
-          width: "20px",
-          height: "20px",
-          fontSize: "12px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-        }}
-      >
-        ✖
-      </button>
     </div>
   );
 }

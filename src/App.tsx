@@ -31,7 +31,6 @@ function App() {
 
   useEffect(() => {
     console.log('form has been changed');
-    
     setForm((prev) => ({...prev, sections: sections})) ;
   }, [sections])
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {

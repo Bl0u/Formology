@@ -123,20 +123,18 @@ textarea {
   background-color: white;
   resize: none;
   color: black ;
-/* remove the behavior, when writing the border is selected */
-
 }
+
 
 .textareaQuestion{
 font-size: 25px;
-margin-top: 0px;
+margin-top: 10px;
 margin-left: 50px;
 margin-right: 50px;
 margin-bottom: 15px;
 overflow: hidden ;
 resize: none ;
 border: none ;
-
 }
 .requiredToggle{
   margin-left: 10px;
