@@ -5,7 +5,7 @@ interface ToggleSwitchProps {
   questionId: string;
 }
 const ToggleSwitch = ({ label, questionId }: ToggleSwitchProps) => {
-console.log(questionId);
+// console.log(questionId);
 
   return (
     <div className="container">

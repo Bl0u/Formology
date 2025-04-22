@@ -30,7 +30,7 @@ function App() {
   const [btnName, setBtnName] = useState("Start Section");
 
   useEffect(() => {
-    console.log('form has been changed');
+    // console.log('form has been changed');
     setForm((prev) => ({...prev, sections: sections})) ;
   }, [sections])
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
@@ -239,7 +239,26 @@ function App() {
       setCurrSectionId(null);
     }
   };
-
+  const handleTitleUpdate = (sectionId: string, newTitle: string) => {
+    setForm((prev) => {
+      // Create a new object to avoid mutating the previous state
+      const newForm = {...prev};
+      
+      // Update the sections array with the new title for the matching section
+      newForm.sections = prev.sections.map((section) => {
+        if (section.sectionId === sectionId) {
+          return {
+            ...section,
+            title: newTitle
+          };
+        }
+        return section;
+      });
+      
+      // Return the updated form object
+      return newForm;
+    });
+  }
   console.log(form);
   
   return (
@@ -287,7 +306,16 @@ function App() {
             <div key={section.sectionId || "fallback-key"} style={{
               marginBottom: 200,
             }}>
-              <h3 className="section-title">{section.title}</h3>
+              <textarea 
+              name="formTitle" 
+              id="formTitle-Id" 
+              rows={2}
+              cols={50}
+              onChange={(e) => {
+                handleTitleUpdate(section.sectionId, e.target.value) ;
+              }}
+              placeholder={section.title}>
+              </textarea>
               
               {section.questions?.map((question) => {
                 return (
