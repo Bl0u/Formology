@@ -7,12 +7,11 @@ import {
   generateUniqueId,
   QuestionFormat,
   SectionContent,
-  FormContent
+  FormContent,
 } from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
 import { sendToDB } from "./Components/DB/Database.tsx";
 // used to efficiently store the content of the form
-
 
 export const SectionContext = createContext({});
 // custom hooks to avoid initial value error
@@ -23,26 +22,24 @@ function App() {
   );
   const [sections, setSections] = useState<SectionContent[]>([]);
   const [form, setForm] = useState<FormContent>({
-    formId: generateUniqueId(), 
-  sections: [], 
-  }) ;
+    formId: generateUniqueId(),
+    sections: [],
+  });
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const [btnName, setBtnName] = useState("Start Section");
 
   useEffect(() => {
     // console.log('form has been changed');
-    setForm((prev) => ({...prev, sections: sections})) ;
-  }, [sections])
+    setForm((prev) => ({ ...prev, sections: sections }));
+  }, [sections]);
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
-    
     // Create a new array with the updated question
     const updatedSections = sections?.map((section) => {
-  
       // If this is not the section containing our question, return it unchanged
       if (section.sectionId !== newQuestion.sectionId) {
         return section;
       }
-      
+
       // Create a new section with updated questions
       return {
         ...section,
@@ -53,13 +50,12 @@ function App() {
           }
           // Otherwise return the original question
           return question;
-        })
+        }),
       };
     });
-    
+
     // Update the global state with the new sections
     setSections(updatedSections);
-    
   };
   const handleAiRequest = async (message: string) => {
     try {
@@ -75,7 +71,10 @@ function App() {
                 {
                   text: `Generate a structured JSON form based on the following requirements: '${message}'.
                   
-                  Current Date and Time: ${new Date().toISOString().slice(0, 19).replace('T', ' ')}
+                  Current Date and Time: ${new Date()
+                    .toISOString()
+                    .slice(0, 19)
+                    .replace("T", " ")}
                   Current User: Bl0u
                   
                   - Output should be a valid JSON with this structure:
@@ -119,13 +118,13 @@ function App() {
           ],
         }),
       });
-  
+
       const data = await response.json();
       let aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      
+
       // Clean up the response to ensure it's valid JSON
       aiText = aiText.replace(/```json|```/g, "").trim();
-  
+
       let parsed;
       try {
         parsed = JSON.parse(aiText);
@@ -133,39 +132,32 @@ function App() {
         console.error("Failed to parse AI response:", parseError);
         parsed = { sections: [] };
       }
-  
+
       // Check if we have a sections array in the response
       if (parsed.sections && Array.isArray(parsed.sections)) {
         // Convert each AI section to your application's SectionContent format
-        const newSections: SectionContent[] = parsed.sections.map((aiSection: any) => {
-          const sectionId = generateUniqueId();
-          
-          return {
-            title: aiSection.sectionName || "AI Generated Section",
-            sectionId: sectionId,
-            questions: Array.isArray(aiSection.fields) 
-              ? aiSection.fields.map((field: any) => ({
-                  sectionId: sectionId,
-                  questionId: generateUniqueId(),
-                  type: field.type || "text",
-                  question: field.question || "Generated Question",
-                  values: field.options || null,
-                }))
-              : [],
-          };
-        });
-  
+        const newSections: SectionContent[] = parsed.sections.map(
+          (aiSection: any) => {
+            const sectionId = generateUniqueId();
+
+            return {
+              title: aiSection.sectionName || "AI Generated Section",
+              sectionId: sectionId,
+              questions: Array.isArray(aiSection.fields)
+                ? aiSection.fields.map((field: any) => ({
+                    sectionId: sectionId,
+                    questionId: generateUniqueId(),
+                    type: field.type || "text",
+                    question: field.question || "Generated Question",
+                    values: field.options || null,
+                  }))
+                : [],
+            };
+          }
+        );
+
         // Add all the new sections to the existing ones
-        setSections(prev => [...prev, ...newSections]);
-        
-        // Set the current section ID to the first one generated, if any sections were created
-        if (newSections.length > 0) {
-          setCurrSectionId(newSections[0].sectionId);
-        }
-        
-        console.log(`Generated ${newSections.length} sections from AI request`);
-      } else {
-        console.warn("AI response did not contain a valid 'sections' array.");
+        setSections((prev) => [...prev, ...newSections]);
       }
     } catch (error) {
       console.error("Failed to fetch AI response:", error);
@@ -198,16 +190,15 @@ function App() {
   };
 
   const handleRemoveOption = (id: string) => {
-
     setSections((prev) => {
-      const newSections = prev.map(section => ({
-        ...section, 
-        questions: section.questions?.filter((question, index) =>
-        question.questionId !== id)
-      }))
-      return newSections ;
-    }) ;
-
+      const newSections = prev.map((section) => ({
+        ...section,
+        questions: section.questions?.filter(
+          (question, index) => question.questionId !== id
+        ),
+      }));
+      return newSections;
+    });
   };
 
   const handleClickStartSection = () => {
@@ -242,25 +233,25 @@ function App() {
   const handleTitleUpdate = (sectionId: string, newTitle: string) => {
     setForm((prev) => {
       // Create a new object to avoid mutating the previous state
-      const newForm = {...prev};
-      
+      const newForm = { ...prev };
+
       // Update the sections array with the new title for the matching section
       newForm.sections = prev.sections.map((section) => {
         if (section.sectionId === sectionId) {
           return {
             ...section,
-            title: newTitle
+            title: newTitle,
           };
         }
         return section;
       });
-      
+
       // Return the updated form object
       return newForm;
     });
-  }
+  };
   console.log(form);
-  
+
   return (
     <>
       <Navbar>
@@ -292,50 +283,55 @@ function App() {
           Add CheckBox
         </button>
         <button
-        onClick={() => {
-          sendToDB(form) ;
-        }}
+          onClick={() => {
+            sendToDB(form);
+          }}
         >
           Build Form
         </button>
         <AskAi onRequest={handleAiRequest}></AskAi>
       </Navbar>
       <Form>
-        {sections.map((section) => {
-          return (
-            <div key={section.sectionId || "fallback-key"} style={{
-              marginBottom: 200,
-            }}>
-              <textarea 
-              name="formTitle" 
-              id="formTitle-Id" 
-              rows={2}
-              cols={50}
-              onChange={(e) => {
-                handleTitleUpdate(section.sectionId, e.target.value) ;
-              }}
-              placeholder={section.title}>
-              </textarea>
-              
-              {section.questions?.map((question) => {
-                return (
-                  <>
-                  <div className="eachQuestion">
-                  <Question
-                    updateSectionsGlobalState={updateSectionsGlobalState}
-                    key={question.questionId}
-                    questionDetails={question}
-                    sectionId={currSectionId ?? ""}
-                    removeOption={handleRemoveOption}
-                  />
-                  {/* add navbar as a button here */}
-                  </div>
-                  </>
-                );
-              })}
-            </div>
-          );
-        })}
+        <div key={form.formId}>
+          {form.sections.map((section) => {
+            return (
+              <div
+                key={section.sectionId || "fallback-key"}
+                style={{
+                  marginBottom: 200,
+                }}
+              >
+                <textarea
+                  className="textareaQuestion"
+                  name="formTitle"
+                  id="formTitle-Id"
+                  rows={2}
+                  cols={50}
+                  onChange={(e) => {
+                    handleTitleUpdate(section.sectionId, e.target.value);
+                  }}
+                  placeholder={section.title}
+                ></textarea>
+                {section.questions?.map((question) => {
+                  return (
+                    <>
+                      <div className="eachQuestion">
+                        <Question
+                          updateSectionsGlobalState={updateSectionsGlobalState}
+                          key={question.questionId}
+                          questionDetails={question}
+                          sectionId={currSectionId ?? ""}
+                          removeOption={handleRemoveOption}
+                        />
+                        {/* add navbar as a button here */}
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
       </Form>
     </>
   );
