@@ -285,10 +285,15 @@ function App() {
       <Form>
         {sections.map((section) => {
           return (
-            <div key={section.sectionId || "fallback-key"}>
+            <div key={section.sectionId || "fallback-key"} style={{
+              marginBottom: 200,
+            }}>
               <h3 className="section-title">{section.title}</h3>
+              
               {section.questions?.map((question) => {
                 return (
+                  <>
+                  <div className="eachQuestion">
                   <Question
                     updateSectionsGlobalState={updateSectionsGlobalState}
                     key={question.questionId}
@@ -296,6 +301,9 @@ function App() {
                     sectionId={currSectionId ?? ""}
                     removeOption={handleRemoveOption}
                   />
+                  {/* add navbar as a button here */}
+                  </div>
+                  </>
                 );
               })}
             </div>

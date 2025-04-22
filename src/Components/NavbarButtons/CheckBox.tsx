@@ -59,7 +59,7 @@ export default function SelectOption(props: BaseQuestionProps) {
     <>
       <div
         style={{
-          border: "1px solid #ccc",
+          border: "3px solid #ccc",
           padding: "10px",
           marginBottom: "10px",
         }}

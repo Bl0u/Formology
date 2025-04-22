@@ -1,0 +1,73 @@
+
+.container {
+  position: relative;
+  left: 250px;
+}
+.toggle-switch {
+  position: relative;
+  width: 40px; /* Reduced from 75px */
+  display: inline-block;
+  text-align: left;
+  top: 4px; /* Reduced from 8px */
+}
+.checkbox {
+  display: none;
+}
+.label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 0 solid #bbb;
+  border-radius: 15px; /* Reduced from 20px */
+}
+.inner {
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 0.3s ease-in 0s;
+}
+.inner:before,
+.inner:after {
+  float: left;
+  width: 50%;
+  height: 20px; /* Reduced from 36px */
+  padding: 0;
+  line-height: 24px; /* Reduced from 36px */
+  color: #fff;
+  font-weight: bold;
+  box-sizing: border-box;
+  font-size: 11px; /* Added smaller font size */
+}
+.inner:before {
+  content: "";
+  padding-left: 7px; /* Reduced from 10px */
+  background-color: blue;
+  color: #fff;
+}
+
+.inner:after {
+  content: "";
+  padding-right: 7px; /* Reduced from 10px */
+  background-color: #bbb;
+  color: #fff;
+  text-align: right;
+}
+.switch {
+  display: block;
+  width: 16px; /* Reduced from 24px */
+  margin: 4px; /* Reduced from 5px */
+  background: #fff;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 15px; /* Adjusted from 40px */
+  border: 0 solid #bbb;
+  border-radius: 12px; /* Reduced from 20px */
+  transition: all 0.3s ease-in 0s;
+}
+.checkbox:checked + .label .inner {
+  margin-left: 0;
+}
+.checkbox:checked + .label .switch {
+  right: 0px;
+}
