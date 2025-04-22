@@ -163,8 +163,6 @@ function App() {
       console.error("Failed to fetch AI response:", error);
     }
   };
-  // no need to update sections, any change in section automatically
-  // done in sections
   const handleClickAddQuestion = (questionType: string) => {
     if (!currSectionId) return;
 
@@ -188,7 +186,6 @@ function App() {
       });
     });
   };
-
   const handleRemoveOption = (id: string) => {
     setSections((prev) => {
       const newSections = prev.map((section) => ({
@@ -200,7 +197,6 @@ function App() {
       return newSections;
     });
   };
-
   const handleClickStartSection = () => {
     const hope = prompt("Please provide the section name:");
     if (!hope) return;
@@ -209,12 +205,9 @@ function App() {
       sectionId: generateUniqueId(),
       questions: [],
     };
-    if (newSection.sectionId) {
       setCurrSectionId(newSection.sectionId);
-    }
     setSections((prev) => [...prev, newSection]);
   };
-  
   const handleTitleUpdate = (sectionId: string, newTitle: string) => {
     setForm((prev) => {
       // Create a new object to avoid mutating the previous state
@@ -233,6 +226,14 @@ function App() {
 
       // Return the updated form object
       return newForm;
+    });
+  };
+  const handleDeleteSection = (sectionId: string) => {
+    setSections((prev) => {
+      // Filter out the section with the matching ID
+      const newSections = prev.filter((section) => section.sectionId !== sectionId);
+      // Return the filtered array as the new state
+      return newSections;
     });
   };
   console.log(form);
@@ -289,7 +290,7 @@ function App() {
                 <textarea
                   className="textareaQuestion"
                   name="formTitle"
-                  id="formTitle-Id"
+                  id={`formTitle-${section.sectionId}`} // Unique ID for each textarea
                   rows={2}
                   cols={50}
                   onChange={(e) => {
@@ -317,11 +318,17 @@ function App() {
                   className="changeCurrId-Btn"
                   onClick={() => {
                     setCurrSectionId(section.sectionId);
-                    // setBtnName("End Section")
-                    setBtnName("Start Section");
                   }}
                 >
                   Edit this Section
+                </button>
+                <button
+                  className="deleteCurrSection"
+                  onClick={() => {
+                    handleDeleteSection(section.sectionId);
+                  }}
+                >
+                  Delete Section
                 </button>
               </div>
             );
