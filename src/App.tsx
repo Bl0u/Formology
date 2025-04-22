@@ -202,34 +202,19 @@ function App() {
   };
 
   const handleClickStartSection = () => {
-    if (btnName === "Start Section") {
-      const hope = prompt("Please provide the section name:");
-      if (!hope) return;
-
-      const existingSectionId = Object.keys({ sections }).find(
-        (_) => sectionContent.title === hope
-      );
-
-      if (existingSectionId) {
-        setCurrSectionId(existingSectionId);
-      } else {
-        const newSection: SectionContent = {
-          title: hope,
-          sectionId: generateUniqueId(),
-          questions: [],
-        };
-        if (newSection.sectionId) {
-          setCurrSectionId(newSection.sectionId);
-        }
-        setSections((prev) => [...prev, newSection]);
-      }
-
-      setBtnName("End Section");
-    } else {
-      setBtnName("Start Section");
-      setCurrSectionId(null);
+    const hope = prompt("Please provide the section name:");
+    if (!hope) return;
+    const newSection: SectionContent = {
+      title: hope,
+      sectionId: generateUniqueId(),
+      questions: [],
+    };
+    if (newSection.sectionId) {
+      setCurrSectionId(newSection.sectionId);
     }
+    setSections((prev) => [...prev, newSection]);
   };
+  
   const handleTitleUpdate = (sectionId: string, newTitle: string) => {
     setForm((prev) => {
       // Create a new object to avoid mutating the previous state
@@ -328,6 +313,16 @@ function App() {
                     </>
                   );
                 })}
+                <button
+                  className="changeCurrId-Btn"
+                  onClick={() => {
+                    setCurrSectionId(section.sectionId);
+                    // setBtnName("End Section")
+                    setBtnName("Start Section");
+                  }}
+                >
+                  Edit this Section
+                </button>
               </div>
             );
           })}
