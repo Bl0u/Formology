@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import "./Auth.css";
+
+
 import {
   faCheck,
   faTimes,
@@ -37,9 +39,9 @@ const Register = () => {
 
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
-
   useEffect(() => {
-    userRef.current?.focus();
+    const inputRef = userRef.current as HTMLInputElement | null;
+    inputRef?.focus();
   }, []);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ const Register = () => {
     setValidEmail(EMAIL_REGEX.test(email));
   }, [email]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
@@ -328,11 +330,11 @@ const Register = () => {
               type="button"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              // disabled={
-              //   !validEmail || !validMatch || !validName || !validPwd
-              //     ? true
-              //     : false
-              // }
+              disabled={
+                !validEmail || !validMatch || !validName || !validPwd
+                  ? true
+                  : false
+              }
             >
               Create Account
             </motion.button>
