@@ -9,5 +9,7 @@ export default function sendRegisterInfoToDB(registerationInformationObject: Reg
     console.log(registerationInformationObject.email);
     console.log(registerationInformationObject.pwd);
 
-    axios.post('http://localhost:80/Form/registerDB.php', registerationInformationObject) ;
+    axios.post('http://localhost:80/Form/registerDB.php', registerationInformationObject).then((response) => {
+        console.log(response.data);
+    }) ;
 }

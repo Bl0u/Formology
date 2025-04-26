@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import sendRegisterInfoToDB from "../DB/RegisterDB";
-import { generateUniqueId, RegisterInformation } from "../NavbarButtons/type";
+import { generateUniqueId, UserInformation } from "../NavbarButtons/type";
 import "./Auth.css";
 import "./Register.css";
 import {
@@ -70,7 +70,7 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const regInfo: RegisterInformation = { userId: generateUniqueId(), fullName: user, email, pwd };
+    const regInfo: UserInformation = { userId: generateUniqueId(), fullName: user, email, pwd };
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
     const v3 = EMAIL_REGEX.test(email);
@@ -80,17 +80,17 @@ const Register = () => {
     }
     console.log("successfull submission nigga");
     sendRegisterInfoToDB(regInfo);
-    // setSuccess(true);
+    setSuccess(true);
   };
 
-  // useEffect(() => {
-  //   if (success) {
-  //     const timer = setTimeout(() => {
-  //       navigator("/");
-  //     }, 5000);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [success]);
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigator("/login");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
   return (
     <>
       {success ? (
