@@ -1,4 +1,5 @@
 import { BaseQuestionProps, QuestionFormat } from "./type";
+import "../CSS/CheckBox.css"
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.tsx";
@@ -57,12 +58,7 @@ export default function SelectOption(props: BaseQuestionProps) {
   return (
     <>
       <div
-        className="input-container"
-        style={{
-          border: "2px solid #ccc",
-          padding: "10px",
-        }}
-      >
+        className="input-container question">
         <ToggleSwitch
           label="move-me"
           questionId={checkboxQuestion?.questionId}
@@ -115,32 +111,22 @@ export default function SelectOption(props: BaseQuestionProps) {
                 onChange={(e) => {
                   updateAnswer(e.target.value);
                 }}
-                disabled={!option}
+                // disabled={!option}
+                disabled
               />
             </div>
 
             <button
               onClick={() => removeChoice(index)}
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                color: "white",
-                border: "none",
-                borderRadius: "50%",
-                width: "20px",
-                height: "20px",
-                fontSize: "12px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
+              className="remove-choice"
             >
               ✖
             </button>
           </div>
         ))}
 
-        <button onClick={addOption}>Add Option</button>
+        <button className="add-choice-button" onClick={addOption}>Add Option</button>
+        
       </div>
     </>
   );

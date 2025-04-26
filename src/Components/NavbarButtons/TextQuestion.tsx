@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import "../Trash/Trash.css" ;
 // import BaseQuestionProps {QuestionFormat} from "./type.ts";
@@ -17,7 +18,7 @@ export default function TextQuestion(props: BaseQuestionProps) {
     setTextQuestion(props.questionDetails);
   }, [props.questionDetails]);
   return (
-    <div>
+    <div className="question">
         <ToggleSwitch label="move-me" questionId={textQuestion?.questionId} />
         <button className="TrashButton">
         <Trash2 className="trashPosition"

@@ -1,7 +1,7 @@
+import "../CSS/RadioQuestion.css"
 import { useEffect, useState } from "react";
 import { BaseQuestionProps, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.tsx";
-import "../CSS/RadioQuestion.css";
 import { Trash2 } from "lucide-react";
 
 export default function RadioQuestion(props: BaseQuestionProps) {
@@ -58,13 +58,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   };
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginBottom: "10px",
-      }}
-    >
+    <div className="question">
       <ToggleSwitch
           label="move-me"
           questionId={radioQuestion?.questionId}
@@ -110,6 +104,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
               placeholder={`Enter option number ${index + 1}`}
             />
             <input
+            disabled
               className="radioButton"
               type="radio"
               name={radioQuestion.questionId}
@@ -119,32 +114,20 @@ export default function RadioQuestion(props: BaseQuestionProps) {
                 setSelectedChoice(choice);
                 handleChoiceChange(choice);
               }}
-              disabled={!choice}
+              // disabled={!choice}
             />
           </div>
 
           <button
             onClick={() => removeChoice(index)}
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-              color: "white",
-              border: "none",
-              borderRadius: "50%",
-              width: "20px",
-              height: "20px",
-              fontSize: "12px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
+            className="remove-choice"
           >
             ✖
           </button>
         </div>
       ))}
       <br />
-      <button onClick={addChoice}>Add Choice</button>
+      <button className="add-choice-button" onClick={addChoice}>Add Choice</button>
     </div>
   );
 }
