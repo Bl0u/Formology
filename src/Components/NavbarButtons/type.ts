@@ -6,7 +6,7 @@ export interface QuestionFormat {
   values?: string[] | null;
   answer?: string | string[] ;
 }
-export interface RegisterInformation{
+export interface UserInformation{
   userId: string ;
   fullName: string;
   email: string;
