@@ -1,73 +1,79 @@
-
 .container {
   position: relative;
   left: 250px;
 }
+
 .toggle-switch {
   position: relative;
-  width: 40px; /* Reduced from 75px */
+  width: 40px; /* Adjusted for compact design */
   display: inline-block;
   text-align: left;
-  top: 4px; /* Reduced from 8px */
+  top: 4px; /* Aligned for better placement */
 }
+
 .checkbox {
-  display: none;
+  display: none; /* Hidden for custom toggle design */
 }
+
 .label {
   display: block;
   overflow: hidden;
   cursor: pointer;
   border: 0 solid #bbb;
-  border-radius: 15px; /* Reduced from 20px */
+  border-radius: 15px; /* Consistent rounded corners */
 }
+
 .inner {
   display: block;
-  width: 200%;
-  margin-left: -100%;
-  transition: margin 0.3s ease-in 0s;
+  width: 200%; /* Double-width for toggle background */
+  margin-left: -100%; /* Default position for "off" state */
+  transition: margin 0.3s ease-in;
 }
+
 .inner:before,
 .inner:after {
   float: left;
-  width: 50%;
-  height: 20px; /* Reduced from 36px */
-  padding: 0;
-  line-height: 24px; /* Reduced from 36px */
-  color: #fff;
+  width: 50%; /* Equal halves for toggle states */
+  height: 20px; /* Compact height */
+  line-height: 24px; /* Vertically centered text */
+  font-size: 11px; /* Smaller font size for compact design */
   font-weight: bold;
-  box-sizing: border-box;
-  font-size: 11px; /* Added smaller font size */
-}
-.inner:before {
-  content: "";
-  padding-left: 7px; /* Reduced from 10px */
-  background-color: blue;
   color: #fff;
+  box-sizing: border-box;
+}
+
+.inner:before {
+  content: ""; /* Placeholder for "on" state */
+  padding-left: 7px; /* Reduced padding */
+  background-color: blue; /* "On" state background */
 }
 
 .inner:after {
-  content: "";
-  padding-right: 7px; /* Reduced from 10px */
-  background-color: #bbb;
-  color: #fff;
+  content: ""; /* Placeholder for "off" state */
+  padding-right: 7px; /* Reduced padding */
+  background-color: #bbb; /* "Off" state background */
   text-align: right;
 }
+
 .switch {
   display: block;
-  width: 16px; /* Reduced from 24px */
-  margin: 4px; /* Reduced from 5px */
-  background: #fff;
+  width: 16px; /* Compact toggle size */
+  margin: 4px; /* Consistent spacing */
+  background: #fff; /* Toggle handle color */
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 15px; /* Adjusted from 40px */
+  right: 15px; /* Default position for "off" state */
   border: 0 solid #bbb;
-  border-radius: 12px; /* Reduced from 20px */
-  transition: all 0.3s ease-in 0s;
+  border-radius: 12px; /* Consistent rounded corners */
+  transition: all 0.3s ease-in;
 }
+
+/* Checked state styles */
 .checkbox:checked + .label .inner {
-  margin-left: 0;
+  margin-left: 0; /* Shift to "on" state */
 }
+
 .checkbox:checked + .label .switch {
-  right: 0px;
+  right: 0; /* Align toggle handle to "on" state */
 }
