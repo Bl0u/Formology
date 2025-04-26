@@ -17,12 +17,7 @@ export default function TextQuestion(props: BaseQuestionProps) {
     setTextQuestion(props.questionDetails);
   }, [props.questionDetails]);
   return (
-    <div
-      style={{
-        border: "2px solid #ccc",
-        padding: "10px",
-      }}
-    >
+    <div>
         <ToggleSwitch label="move-me" questionId={textQuestion?.questionId} />
         <button className="TrashButton">
         <Trash2 className="trashPosition"
