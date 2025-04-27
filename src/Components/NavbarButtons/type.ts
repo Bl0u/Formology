@@ -1,3 +1,6 @@
+import {  RefObject } from "react";
+
+
 export interface QuestionFormat {
   questionId: string;
   sectionId: string ;
@@ -13,11 +16,15 @@ export interface UserInformation{
   pwd: string;
 }
 
+export interface ChildProps{
+  childRef?: RefObject<ChildProps>; // or RefObject<HTMLDivElement> or whatever type you are pointing to
+  getFormStateFromChildToParent?: () => void ;
+}
 export  interface BaseQuestionProps {
   sectionId?: string ;
-  questionDetails: QuestionFormat ;
+  questionDetails?: QuestionFormat | null ;
   removeOption?: (id: string) => void; // Make sure this is defined
-  updateSectionsGlobalState: (newQuestion: QuestionFormat) => void;
+  updateSectionsGlobalState?: (newQuestion: QuestionFormat) => void;
 }
 export interface SectionContent {
   title: string;
