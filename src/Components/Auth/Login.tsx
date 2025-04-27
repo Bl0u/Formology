@@ -23,7 +23,7 @@ interface GoogleJwtPayload {
   // picture?: string;
 }
 const Login: React.FC = () => {
-  const { errMsg, setErrMsg } = useAuth();
+  const { errMsg, setErrMsg, setAuth, success, setSuccess } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("peteremil791@gmail.com");
@@ -37,7 +37,6 @@ const Login: React.FC = () => {
   const emailRef = useRef(null);
   const errRef = useRef(null);
 
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const inputRef = emailRef.current as HTMLInputElement | null;
@@ -49,16 +48,15 @@ const Login: React.FC = () => {
     // if at anytime the user changed anything, the error should be cleared out
     setErrMsg("");
   }, [email, pwd]);
+
+  
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (await validateLogin(email, pwd)) {
-      // while fetching always use await
-      setSuccess(true);
-    } else {
-      setErrMsg('No account corresponds to that email.') ;
-    }
+    setAuth({email, pwd}) ;
+
     return;
   }
+
   const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
