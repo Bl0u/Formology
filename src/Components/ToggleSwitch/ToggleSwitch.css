@@ -45,7 +45,7 @@
 .inner:before {
   content: ""; /* Placeholder for "on" state */
   padding-left: 7px; /* Reduced padding */
-  background-color: blue; /* "On" state background */
+  background-color: black; /* "On" state background */
 }
 
 .inner:after {

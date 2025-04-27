@@ -30,13 +30,11 @@ function App() {
   const [btnName, setBtnName] = useState("Start Section");
 
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
-  const itemRef = useRef([]);
+  const sectionRef = useRef(null);
 
-  // useEffect(() => {
-  //   if (currSectionId && itemRef.current[currSectionId]) {
-  //     itemRef.current[currSectionId].scrollIntoView({ behavior: "smooth" });
-  //   }
-  // }, [currSectionId]); // Only trigger scroll when currSectionId changes
+  useEffect(() => {
+    sectionRef.current?.scrollIntoView({behavior: "smooth" });
+  }, [currSectionId]); // Only trigger scroll when currSectionId changes
 
   useEffect(() => {
     // console.log('form has been changed');
@@ -294,7 +292,7 @@ function App() {
           {form.sections.map((section) => {
             return (
               <>
-                <div key={section.sectionId || "fallback-key"}>
+                <div key={section.sectionId || "fallback-key"} ref={sectionRef}>
                   <textarea
                     className="textareaQuestion"
                     name="formTitle"
