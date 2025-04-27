@@ -450,13 +450,12 @@ const Register = () => {
                 <p>
                   Already have an account? <Link to="/login">Sign in</Link>
                 </p>
-                <p className="auth-timestamp">2025-04-23 16:29:29 • Bl0u</p>
+                <p className="auth-timestamp">2025-04-23 16:29:29 • Home</p>
               </div>
             </motion.div>
           </motion.div>
         </div>
       )}
-      ;
     </>
   );
 };
