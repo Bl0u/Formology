@@ -4,18 +4,18 @@ import "../src/Components/NavbarButtons/Navbar/Navbar.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar/Navbar.tsx";
-import { useRef, useState, createContext, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   generateUniqueId,
   QuestionFormat,
   SectionContent,
-  FormContent,
 } from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
 import { sendToDB } from "./Components/DB/Database.tsx";
+import {useAuth} from "./Components/Auth/Context/AuthContext.tsx";
+import { Link, useNavigate } from "react-router-dom";
 // used to efficiently store the content of the form
 
-export const SectionContext = createContext({});
 // custom hooks to avoid initial value error
 
 function App() {
@@ -23,19 +23,22 @@ function App() {
     {} as SectionContent
   );
   const [sections, setSections] = useState<SectionContent[]>([]);
-  const [form, setForm] = useState<FormContent>({
-    formId: generateUniqueId(),
-    sections: [],
-  });
+
   const [btnName, setBtnName] = useState("Start Section");
 
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const sectionRef = useRef(null);
+  const {form, setForm, globalFormState} = useAuth() ;
 
+  useEffect(() => {
+    setForm(globalFormState) ;
+    console.log('on mount at App.tsx we did assign globalFormState');
+    
+  }, [])
   useEffect(() => {
     sectionRef.current?.scrollIntoView({behavior: "smooth" });
   }, [currSectionId]); // Only trigger scroll when currSectionId changes
-
+  const navigator = useNavigate() ;
   useEffect(() => {
     // console.log('form has been changed');
     setForm((prev) => ({ ...prev, sections: sections }));
@@ -199,7 +202,7 @@ function App() {
       const newSections = prev.map((section) => ({
         ...section,
         questions: section.questions?.filter(
-          (question, index) => question.questionId !== id
+          (question) => question.questionId !== id
         ),
       }));
       return newSections;
@@ -280,16 +283,22 @@ function App() {
         </button>
         <button
           onClick={() => {
-            sendToDB(form);
+            if (form)
+              sendToDB(form);
           }}
         >
           Build Form
         </button>
+        <button onClick={() => {
+          navigator('/reviewForm') ;
+        }}>Review Form</button>
+        {/* <Link to="/reviewForm">Review Form</Link> */}
+
         <AskAi onRequest={handleAiRequest}></AskAi>
       </Navbar>
       <Form>
-        <div key={form.formId}>
-          {form.sections.map((section) => {
+        <div key={form?.formId}>
+          {form?.sections.map((section) => {
             return (
               <>
                 <div key={section.sectionId || "fallback-key"} ref={sectionRef}>
