@@ -15,14 +15,6 @@
     box-sizing: border-box;
   }
   
-  .checkBoxButton, .radioButton {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    margin: 0;
-  }
   
   .input-checkbox-container {
     position: relative;
@@ -39,7 +31,6 @@
     justify-content: center; /* Center the content horizontally */
   }
   
-  /* Style specifically for radio buttons */
   .radioButton {
     position: absolute;
     left: 15px;
@@ -47,4 +38,18 @@
     transform: translateY(-50%);
     z-index: 2;
     margin: 0;
+    background-color: white; /* White background */
+    border: 2px solid black; /* Black border */
+    border-radius: 50%; /* Circular border for a radio button look */
+    width: 16px; /* Adjusted size for consistency */
+    height: 16px; /* Maintain proportional size */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+  }
+  
+  /* Optional: Hover effect for better interactivity */
+  .radioButton:hover {
+    background-color: black; /* Black background on hover */
+    border-color: white; /* White border on hover */
+    transform: translateY(-50%) scale(1.1); /* Slight zoom effect */
   }

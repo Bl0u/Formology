@@ -6,6 +6,12 @@ export interface QuestionFormat {
   values?: string[] | null;
   answer?: string | string[] ;
 }
+export interface UserInformation{
+  userId: string ;
+  fullName: string;
+  email: string;
+  pwd: string;
+}
 
 export  interface BaseQuestionProps {
   sectionId?: string ;

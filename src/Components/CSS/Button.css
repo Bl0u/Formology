@@ -1,0 +1,52 @@
+/* General button styling (excluding TrashButton) */
+button:not(.TrashButton) {
+  margin: 3px; /* Keep the specified margin */
+  padding: 10px 20px; /* Add padding for better size and feel */
+  background-color: white; /* White background */
+  color: #333; /* Dark grey font color */
+  font-size: 16px; /* Slightly larger font for readability */
+  font-weight: bold; /* Make the text bold */
+  border: 2px solid #333; /* Dark grey border for consistency */
+  border-radius: 8px; /* Smooth rounded corners */
+  cursor: pointer; /* Pointer cursor for interactivity */
+  transition: all 0.3s ease; /* Smooth transitions for hover and animation effects */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Hover effect */
+button:not(.TrashButton):hover {
+  background-color: #333; /* Dark grey background on hover */
+  color: white; /* White font color on hover */
+  transform: scale(1.05); /* Slight zoom effect on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Active button effect */
+button:not(.TrashButton):active {
+  background-color: #555; /* Slightly darker grey for active state */
+  transform: scale(0.98); /* Slightly shrink on click */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+}
+
+/* Focus state for accessibility */
+button:not(.TrashButton):focus {
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a glowing effect for focus */
+}
+
+/* Subtle animation for button appearance */
+button:not(.TrashButton) {
+  animation: fade-in 0.5s ease;
+}
+
+/* Fade-in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

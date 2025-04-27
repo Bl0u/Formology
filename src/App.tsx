@@ -1,7 +1,9 @@
 import "./App.css";
+import "../src/Components/CSS/Button.css" ;
+import "../src/Components/NavbarButtons/Navbar/Navbar.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
-import Navbar from "./Components/NavbarButtons/Navbar";
+import Navbar from "./Components/NavbarButtons/Navbar/Navbar.tsx";
 import { useState, createContext, useEffect } from "react";
 import {
   generateUniqueId,
@@ -283,9 +285,6 @@ function App() {
             return (
               <div
                 key={section.sectionId || "fallback-key"}
-                style={{
-                  marginBottom: 200,
-                }}
               >
                 <textarea
                   className="textareaQuestion"
@@ -322,6 +321,7 @@ function App() {
                 >
                   Edit this Section
                 </button>
+                <button>Pick a service</button>
                 <button
                   className="deleteCurrSection"
                   onClick={() => {
