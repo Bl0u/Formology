@@ -1,12 +1,27 @@
-import { useContext, createContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
+import {
+  generateUniqueId,
+  FormContent,
+  ChildProps,
+} from "../../NavbarButtons/type";
+import { useRef, RefObject } from "react";
+
+import {
+  useContext,
+  createContext,
+  useState,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from "react";
 import validateLogin from "../../DB/LoginDB";
 
 // Define the shape of your auth state
 interface AuthState {
-  email: string, 
-  pwd: string, 
-  role?: Number,
-  accessToken?: string ;
+  email: string;
+  pwd: string;
+  role?: Number;
+  accessToken?: string;
 }
 
 // Define the context type
@@ -16,7 +31,11 @@ interface AuthContextType {
   errMsg: string;
   setErrMsg: Dispatch<SetStateAction<string>>;
   success: boolean;
-  setSuccess:  Dispatch<SetStateAction<boolean>>;
+  setSuccess: Dispatch<SetStateAction<boolean>>;
+  form: FormContent | null;
+  setForm: Dispatch<SetStateAction<FormContent>>;
+  globalFormState: FormContent ;
+  getChildState: () => void ;
 }
 
 // Create the context with a default value of undefined
@@ -26,21 +45,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [success, setSuccess] = useState(false);
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [errMsg, setErrMsg] = useState<string>("");
+  const [form, setForm] = useState<FormContent>({
+    formId: generateUniqueId(),
+    sections: [],
+  });
+  const globalFormState = {} as FormContent ;
+
+
+  const getChildState = () => {
+    Object.assign(globalFormState, form);
+    console.log('got the child state and its saved at getChildState from Auth');
+    
+  }
+
+
+  // useEffect(() => {
+  //   if (childRef.current) {
+  //     setForm(childRef.current);
+  //   }
+  // }, []);
+
+
+
   useEffect(() => {
-    if (auth?.email){
+    if (auth?.email) {
       const hope = async () => {
         if (await validateLogin(auth.email, auth.pwd)) {
           // while fetching always use await
           setSuccess(true);
         } else {
-          setErrMsg('No account corresponds to that email.') ;
+          setErrMsg("No account corresponds to that email.");
         }
-      }
+      };
 
-      hope() ;
-    } 
-    
-  }, [auth])
+      hope();
+    }
+  }, [auth]);
 
   return (
     <AuthContext.Provider
@@ -50,7 +90,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         errMsg,
         setErrMsg,
         success,
-        setSuccess
+        setSuccess,
+        form,
+        setForm,
+        globalFormState,
+        getChildState,
       }}
     >
       {children}
@@ -67,4 +111,4 @@ export const useAuth = () => {
   return context;
 };
 
-export default AuthContext; 
+export default AuthContext;

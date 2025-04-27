@@ -9,12 +9,14 @@ import './index.css';
 import App from './App';
 import Home from './Home';
 import Login from './Components/Auth/Login';
+import ReviewFormPage from './Components/ReviewForm/ReviewFormPage';
 
 const router = createBrowserRouter([
   { path: '/', element: <Home /> }, // Root path
   { path: '/builder', element: <App /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
+  { path: '/reviewForm', element: <ReviewFormPage /> },
 ]);
 
 const rootElement = document.getElementById('root');

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
-  const navigator = useNavigate('') ;
+  const navigator = useNavigate() ;
   // const navigator = useNavigate() ;
   const [scrollY, setScrollY] = useState(0);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
