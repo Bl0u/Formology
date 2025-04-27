@@ -1,4 +1,5 @@
-import { useContext, createContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
+import { useContext, createContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
+import validateLogin from "../../DB/LoginDB";
 
 // Define the shape of your auth state
 interface AuthState {
@@ -14,15 +15,32 @@ interface AuthContextType {
   setAuth: Dispatch<SetStateAction<AuthState | null>>;
   errMsg: string;
   setErrMsg: Dispatch<SetStateAction<string>>;
+  success: boolean;
+  setSuccess:  Dispatch<SetStateAction<boolean>>;
 }
 
 // Create the context with a default value of undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 // Provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [success, setSuccess] = useState(false);
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [errMsg, setErrMsg] = useState<string>("");
+  useEffect(() => {
+    if (auth?.email){
+      const hope = async () => {
+        if (await validateLogin(auth.email, auth.pwd)) {
+          // while fetching always use await
+          setSuccess(true);
+        } else {
+          setErrMsg('No account corresponds to that email.') ;
+        }
+      }
+
+      hope() ;
+    } 
+    
+  }, [auth])
 
   return (
     <AuthContext.Provider
@@ -31,6 +49,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setAuth,
         errMsg,
         setErrMsg,
+        success,
+        setSuccess
       }}
     >
       {children}
