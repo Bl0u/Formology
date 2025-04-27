@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./Home.css";
+import { useNavigate } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
+  const navigator = useNavigate('') ;
   // const navigator = useNavigate() ;
   const [scrollY, setScrollY] = useState(0);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -168,6 +170,9 @@ const Home: React.FC = () => {
               className="primary-button"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                navigator('/builder') ;
+              }}
             >
               Get Started
             </motion.button>
