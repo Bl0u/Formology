@@ -1,5 +1,5 @@
 import "../CSS/RadioQuestion.css"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BaseQuestionProps, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.tsx";
 import { Trash2 } from "lucide-react";
@@ -8,6 +8,13 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   const [radioQuestion, setQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
+  const questionRef = useRef(null) ;
+
+
+  useEffect(() => {
+    questionRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+
+  }, [])
   useEffect(() => {
     props.updateSectionsGlobalState(radioQuestion);
   }, [radioQuestion]);
@@ -58,7 +65,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   };
 
   return (
-    <div className="question">
+    <div className="question" ref={questionRef}>
       <ToggleSwitch
           label="move-me"
           questionId={radioQuestion?.questionId}

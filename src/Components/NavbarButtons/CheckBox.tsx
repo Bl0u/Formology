@@ -1,6 +1,6 @@
 import { BaseQuestionProps, QuestionFormat } from "./type";
 import "../CSS/CheckBox.css"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.tsx";
 import "../CSS/CheckBox.css";
@@ -55,9 +55,19 @@ export default function SelectOption(props: BaseQuestionProps) {
       };
     });
   };
+  const questionRef = useRef(null) ;
+
+
+  useEffect(() => {
+    questionRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+
+
+  }, [])
   return (
     <>
+    
       <div
+       ref={questionRef}
         className="input-container question">
         <ToggleSwitch
           label="move-me"
