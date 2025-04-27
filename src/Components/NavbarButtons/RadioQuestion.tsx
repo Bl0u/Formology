@@ -14,13 +14,18 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   useEffect(() => {
     questionRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
 
-  }, [])
+  }, [radioQuestion])
+  
   useEffect(() => {
-    props.updateSectionsGlobalState(radioQuestion);
-  }, [radioQuestion]);
+    if (props.updateSectionsGlobalState) {
+      props.updateSectionsGlobalState(radioQuestion);
+    }  }, [radioQuestion]);
+
   useEffect(() => {
-    setQuestion(props.questionDetails);
+    setQuestion(props?.questionDetails ?? {} as QuestionFormat);
   }, [props.questionDetails]);
+
+
 
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
 

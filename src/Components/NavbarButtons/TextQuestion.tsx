@@ -16,12 +16,16 @@ export default function TextQuestion(props: BaseQuestionProps) {
     questionRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [])
   useEffect(() => {
-    props.updateSectionsGlobalState(textQuestion);
-  }, [textQuestion]);
+    if (props.updateSectionsGlobalState) {
+      props.updateSectionsGlobalState(textQuestion);
+    }  }, [textQuestion]);
 
   useEffect(() => {
-    setTextQuestion(props.questionDetails);
+    setTextQuestion(props?.questionDetails ?? {} as QuestionFormat);
   }, [props.questionDetails]);
+
+
+
   return (
     <div className="question" ref={questionRef} >
         <ToggleSwitch label="move-me" questionId={textQuestion?.questionId} />

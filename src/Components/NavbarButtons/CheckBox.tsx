@@ -9,11 +9,16 @@ export default function SelectOption(props: BaseQuestionProps) {
     {} as QuestionFormat
   );
   useEffect(() => {
-    props.updateSectionsGlobalState(checkboxQuestion);
-  }, [checkboxQuestion]);
+    if (props.updateSectionsGlobalState) {
+      props.updateSectionsGlobalState(checkboxQuestion);
+    }  }, [checkboxQuestion]);
+
   useEffect(() => {
-    setQuestion(() => props.questionDetails);
-  }, [props.questionDetails]); // it needs an array of dependancies
+    setQuestion(props?.questionDetails ?? {} as QuestionFormat);
+  }, [props.questionDetails]);
+
+
+
 
   const addOption = () => {
     setQuestion((prev) => {
@@ -62,7 +67,7 @@ export default function SelectOption(props: BaseQuestionProps) {
     questionRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
 
 
-  }, [])
+  }, [checkboxQuestion])
   return (
     <>
     
