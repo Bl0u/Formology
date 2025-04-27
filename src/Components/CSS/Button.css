@@ -6,11 +6,10 @@ button:not(.TrashButton) {
   color: #333; /* Dark grey font color */
   font-size: 16px; /* Slightly larger font for readability */
   font-weight: bold; /* Make the text bold */
-  border: 2px solid #333; /* Dark grey border for consistency */
+  border: 0px solid #333; /* Dark grey border for consistency */
   border-radius: 8px; /* Smooth rounded corners */
   cursor: pointer; /* Pointer cursor for interactivity */
-  transition: all 0.3s ease; /* Smooth transitions for hover and animation effects */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: all 0.1s ease; /* Smooth transitions for hover and animation effects */
 }
 
 /* Hover effect */

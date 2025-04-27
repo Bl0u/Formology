@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../Trash/Trash.css" ;
 // import BaseQuestionProps {QuestionFormat} from "./type.ts";
 import { BaseQuestionProps, QuestionFormat } from "./type.ts";
@@ -9,7 +9,12 @@ export default function TextQuestion(props: BaseQuestionProps) {
   const [textQuestion, setTextQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
+  const questionRef = useRef(null) ;
 
+
+  useEffect(() => {
+    questionRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [])
   useEffect(() => {
     props.updateSectionsGlobalState(textQuestion);
   }, [textQuestion]);
@@ -18,7 +23,7 @@ export default function TextQuestion(props: BaseQuestionProps) {
     setTextQuestion(props.questionDetails);
   }, [props.questionDetails]);
   return (
-    <div className="question">
+    <div className="question" ref={questionRef} >
         <ToggleSwitch label="move-me" questionId={textQuestion?.questionId} />
         <button className="TrashButton">
         <Trash2 className="trashPosition"

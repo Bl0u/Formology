@@ -1,10 +1,10 @@
 import "./App.css";
-import "../src/Components/CSS/Button.css" ;
+import "../src/Components/CSS/Button.css";
 import "../src/Components/NavbarButtons/Navbar/Navbar.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar/Navbar.tsx";
-import { useState, createContext, useEffect } from "react";
+import { useRef, useState, createContext, useEffect } from "react";
 import {
   generateUniqueId,
   QuestionFormat,
@@ -27,8 +27,16 @@ function App() {
     formId: generateUniqueId(),
     sections: [],
   });
-  const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const [btnName, setBtnName] = useState("Start Section");
+
+  const [currSectionId, setCurrSectionId] = useState<string | null>(null);
+  const itemRef = useRef([]);
+
+  // useEffect(() => {
+  //   if (currSectionId && itemRef.current[currSectionId]) {
+  //     itemRef.current[currSectionId].scrollIntoView({ behavior: "smooth" });
+  //   }
+  // }, [currSectionId]); // Only trigger scroll when currSectionId changes
 
   useEffect(() => {
     // console.log('form has been changed');
@@ -207,7 +215,7 @@ function App() {
       sectionId: generateUniqueId(),
       questions: [],
     };
-      setCurrSectionId(newSection.sectionId);
+    setCurrSectionId(newSection.sectionId);
     setSections((prev) => [...prev, newSection]);
   };
   const handleTitleUpdate = (sectionId: string, newTitle: string) => {
@@ -233,7 +241,9 @@ function App() {
   const handleDeleteSection = (sectionId: string) => {
     setSections((prev) => {
       // Filter out the section with the matching ID
-      const newSections = prev.filter((section) => section.sectionId !== sectionId);
+      const newSections = prev.filter(
+        (section) => section.sectionId !== sectionId
+      );
       // Return the filtered array as the new state
       return newSections;
     });
@@ -283,54 +293,94 @@ function App() {
         <div key={form.formId}>
           {form.sections.map((section) => {
             return (
-              <div
-                key={section.sectionId || "fallback-key"}
-              >
-                <textarea
-                  className="textareaQuestion"
-                  name="formTitle"
-                  id={`formTitle-${section.sectionId}`} // Unique ID for each textarea
-                  rows={2}
-                  cols={50}
-                  onChange={(e) => {
-                    handleTitleUpdate(section.sectionId, e.target.value);
-                  }}
-                  placeholder={section.title}
-                ></textarea>
-                {section.questions?.map((question) => {
-                  return (
-                    <>
-                      <div className="eachQuestion">
-                        <Question
-                          updateSectionsGlobalState={updateSectionsGlobalState}
-                          key={question.questionId}
-                          questionDetails={question}
-                          sectionId={currSectionId ?? ""}
-                          removeOption={handleRemoveOption}
-                        />
-                        {/* add navbar as a button here */}
-                      </div>
-                    </>
-                  );
-                })}
-                <button
-                  className="changeCurrId-Btn"
-                  onClick={() => {
-                    setCurrSectionId(section.sectionId);
-                  }}
-                >
-                  Edit this Section
-                </button>
-                <button>Pick a service</button>
-                <button
-                  className="deleteCurrSection"
-                  onClick={() => {
-                    handleDeleteSection(section.sectionId);
-                  }}
-                >
-                  Delete Section
-                </button>
-              </div>
+              <>
+                <div key={section.sectionId || "fallback-key"}>
+                  <textarea
+                    className="textareaQuestion"
+                    name="formTitle"
+                    id={`formTitle-${section.sectionId}`} // Unique ID for each textarea
+                    rows={2}
+                    cols={50}
+                    onChange={(e) => {
+                      handleTitleUpdate(section.sectionId, e.target.value);
+                    }}
+                    placeholder={section.title}
+                  ></textarea>
+                  {section.questions?.map((question) => {
+                    return (
+                      <>
+                        <div className="eachQuestion">
+                          <Question
+                            updateSectionsGlobalState={
+                              updateSectionsGlobalState
+                            }
+                            key={question.questionId}
+                            questionDetails={question}
+                            sectionId={currSectionId ?? ""}
+                            removeOption={handleRemoveOption}
+                          />
+                          {/* add navbar as a button here */}
+                        </div>
+                      </>
+                    );
+                  })}
+                  <button
+                    className="changeCurrId-Btn"
+                    onClick={() => {
+                      setCurrSectionId(section.sectionId);
+                    }}
+                  >
+                    Edit this Section
+                  </button>
+                  <div className="button-container">
+                    <button
+                      className="main-button"
+                      onMouseOver={() => {
+                        setCurrSectionId(section.sectionId);
+                        // console.log(currSectionId);
+                      }}
+                    >
+                      Pick a service
+                    </button>
+                    <div className="button-slide">
+                      <button
+                        className="slide-button"
+                        onClick={() => {
+                          handleClickAddQuestion("text");
+                        }}
+                      >
+                        Text Question
+                      </button>
+                      <button
+                        className="slide-button"
+                        onClick={() => {
+                          handleClickAddQuestion("radio");
+                        }}
+                      >
+                        Radio Question
+                      </button>
+                      <button
+                        className="slide-button"
+                        onClick={() => {
+                          handleClickAddQuestion("checkbox");
+                        }}
+                      >
+                        Checkbox Question
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    className="deleteCurrSection"
+                    onClick={() => {
+                      handleDeleteSection(section.sectionId);
+                    }}
+                  >
+                    Delete Section
+                  </button>
+                </div>
+                <div
+                ></div>
+              </>
             );
           })}
         </div>

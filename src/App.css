@@ -4,6 +4,15 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  box-sizing: border-box; /* Ensure padding doesn't affect width/height */
+}
+
+body {
+  background-color: white;
+  padding-top: 60px; /* Spacing below navbar */
+  color: black;
+  font-family: 'Inter', sans-serif;
+  padding-bottom: 200px;
 }
 
 /* Each question styling */
@@ -49,13 +58,6 @@
 }
 
 
-/* Body styling */
-body {
-  background-color: white;
-  padding-top: 60px; /* Spacing below navbar */
-  color: black;
-  font-family: Arial, sans-serif;
-}
 
 /* React section title */
 .react-section-name,
@@ -99,7 +101,7 @@ textarea {
   position: relative;
   padding: 20px;
   margin: 20px 0;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 12px;
   background: white; /* Changed to absolute white */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -145,4 +147,46 @@ textarea {
 /* Hover effect for better interactivity */
 .eachQuestion:hover {
   transform: scale(1.02);
+}
+
+
+
+
+/* pick a service effect */
+.button-container {
+  position: relative; /* Relative positioning for the container */
+  display: inline-block; /* Ensure it wraps around the buttons */
+}
+
+.button-slide {
+  position: absolute;
+  top: 100%; /* Place the slide below the main button */
+  left: 0;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  display: none; /* Hidden by default */
+  padding: 10px;
+  z-index: 10; /* Ensure it appears above other elements */
+}
+.slide-button {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 8px 16px;
+  margin: 5px 0;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%; /* Full width for consistency */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.slide-button:hover {
+  background-color: black;
+  color: white;
+}
+
+/* Show the slide on hover */
+.button-container:hover .button-slide {
+  display: block; /* Display the slide menu */
 }
