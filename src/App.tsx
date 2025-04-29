@@ -4,7 +4,7 @@ import "../src/Components/NavbarButtons/Navbar/Navbar.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar/Navbar.tsx";
-import { useRef, useState, createContext, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   generateUniqueId,
   QuestionFormat,
@@ -13,33 +13,68 @@ import {
 } from "./Components/NavbarButtons/type.ts";
 import AskAi from "./Components/NavbarButtons/AskAi";
 import { sendToDB } from "./Components/DB/Database.tsx";
-// used to efficiently store the content of the form
-
-export const SectionContext = createContext({});
-// custom hooks to avoid initial value error
+import { useAuth } from "./Components/Auth/Context/AuthContext.tsx";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./Components/state/store.tsx";
+import {
+  setFormRedux,
+  resetForm,
+} from "./Components/state/Form/FormSlice.tsx";
 
 function App() {
+  const navigator = useNavigate();
   const [sectionContent, setSectionContent] = useState<SectionContent>(
     {} as SectionContent
   );
+  const {isReview, setIsReview} = useAuth() ;
   const [sections, setSections] = useState<SectionContent[]>([]);
-  const [form, setForm] = useState<FormContent>({
-    formId: generateUniqueId(),
-    sections: [],
-  });
+
   const [btnName, setBtnName] = useState("Start Section");
 
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
   const sectionRef = useRef(null);
-
+  // const { form, setForm } = useAuth();
+  const formRedux = useSelector((state: RootState) => state.form.value); // Get form from Redux
+  console.log('initial state from formRedux = ', formRedux);
+  const [form, setForm] = useState<FormContent>(formRedux); // Initialize local state from Redux
+  const [flag, setFlag] = useState(false) ;
+  const dispatch = useDispatch();
+  // Initialize local state with Redux state on mount
   useEffect(() => {
-    sectionRef.current?.scrollIntoView({behavior: "smooth" });
-  }, [currSectionId]); // Only trigger scroll when currSectionId changes
+    setForm(formRedux);
+    setSections(formRedux.sections || []);
+    setCurrSectionId(formRedux.formId || null);
+  }, [formRedux]);
 
+  // Sync local `form` state with Redux state when `form` changes
+  useEffect(() => {console.log('answer = ', flag)}, [flag]) ;
   useEffect(() => {
-    // console.log('form has been changed');
-    setForm((prev) => ({ ...prev, sections: sections }));
+    console.log('formRedux = ', formRedux);
+    console.log('form = ', form);
+    console.log('first = ', (JSON.stringify(form) !== JSON.stringify(formRedux)) );
+    console.log('second = ', (form.sections.length || flag));
+    
+    
+    if ((JSON.stringify(form) !== JSON.stringify(formRedux)) && (form.sections.length || flag)) {
+      console.log('im in here');
+      
+      setFlag(false) ;
+      console.log("Syncing form with Redux, length = ", form.sections.length);
+      dispatch(setFormRedux(form));
+    }
+  }, [form, formRedux, dispatch]);
+
+  // Sync `sections` updates with `form`
+  useEffect(() => {
+    setForm((prevForm) => ({ ...prevForm, sections }));
   }, [sections]);
+
+  // Scroll to the current section when `currSectionId` changes
+  useEffect(() => {
+    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currSectionId]);
+
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
     // Create a new array with the updated question
     const updatedSections = sections?.map((section) => {
@@ -199,7 +234,7 @@ function App() {
       const newSections = prev.map((section) => ({
         ...section,
         questions: section.questions?.filter(
-          (question, index) => question.questionId !== id
+          (question) => question.questionId !== id
         ),
       }));
       return newSections;
@@ -237,7 +272,12 @@ function App() {
     });
   };
   const handleDeleteSection = (sectionId: string) => {
+    setFlag(true) ;
+    console.log('flag = ', flag);
+    
     setSections((prev) => {
+      console.log('delete this section = ', sectionId);
+      
       // Filter out the section with the matching ID
       const newSections = prev.filter(
         (section) => section.sectionId !== sectionId
@@ -246,7 +286,10 @@ function App() {
       return newSections;
     });
   };
-  console.log(form);
+  // console.log(form);
+  console.log('initial state from formRedux = ', formRedux);
+  console.log('initial state from form= ', form);
+  // setForm(formRedux) ;
 
   return (
     <>
@@ -280,16 +323,27 @@ function App() {
         </button>
         <button
           onClick={() => {
-            sendToDB(form);
+            if (form) sendToDB(form);
           }}
         >
           Build Form
         </button>
+        <button
+          onClick={() => {
+            setIsReview(true) ;
+            
+            navigator("/reviewForm");
+          }}
+        >
+          Review Form
+        </button>
+        {/* <Link to="/reviewForm">Review Form</Link> */}
+
         <AskAi onRequest={handleAiRequest}></AskAi>
       </Navbar>
       <Form>
-        <div key={form.formId}>
-          {form.sections.map((section) => {
+        <div key={formRedux?.formId}>
+          {formRedux?.sections.map((section) => {
             return (
               <>
                 <div key={section.sectionId || "fallback-key"} ref={sectionRef}>
@@ -309,6 +363,7 @@ function App() {
                       <>
                         <div className="eachQuestion">
                           <Question
+                          isReview={isReview}
                             updateSectionsGlobalState={
                               updateSectionsGlobalState
                             }
@@ -335,7 +390,7 @@ function App() {
                       className="main-button"
                       onMouseOver={() => {
                         setCurrSectionId(section.sectionId);
-                        // console.log(currSectionId);
+                        console.log(currSectionId);
                       }}
                     >
                       Pick a service
@@ -376,8 +431,6 @@ function App() {
                     Delete Section
                   </button>
                 </div>
-                <div
-                ></div>
               </>
             );
           })}

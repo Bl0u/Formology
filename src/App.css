@@ -5,13 +5,15 @@
   padding: 2rem;
   text-align: center;
   box-sizing: border-box; /* Ensure padding doesn't affect width/height */
+  font-family: 'Poppins';
 }
 
 body {
+  
   background-color: white;
   padding-top: 60px; /* Spacing below navbar */
   color: black;
-  font-family: 'Inter', sans-serif;
+
   padding-bottom: 200px;
 }
 
@@ -71,6 +73,8 @@ textarea {
   background-color: white;
   resize: none;
   color: black;
+  font-family: 'Poppins';
+
 }
 
 .textareaQuestion {

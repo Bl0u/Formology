@@ -1,46 +1,74 @@
-import { useContext, createContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
+import {
+  generateUniqueId,
+  FormContent,
+} from "../../NavbarButtons/type";
+import { useRef, createContext, useState, ReactNode, Dispatch, SetStateAction, useEffect, useContext } from "react";
 import validateLogin from "../../DB/LoginDB";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
-// Define the shape of your auth state
 interface AuthState {
-  email: string, 
-  pwd: string, 
-  role?: Number,
-  accessToken?: string ;
+  email: string;
+  pwd: string;
+  role?: Number;
+  accessToken?: string;
 }
 
-// Define the context type
 interface AuthContextType {
   auth: AuthState | null;
   setAuth: Dispatch<SetStateAction<AuthState | null>>;
   errMsg: string;
   setErrMsg: Dispatch<SetStateAction<string>>;
   success: boolean;
-  setSuccess:  Dispatch<SetStateAction<boolean>>;
+  setSuccess: Dispatch<SetStateAction<boolean>>;
+  form: FormContent | null;
+  setForm: Dispatch<SetStateAction<FormContent>>;
+  globalFormStateRef: React.MutableRefObject<FormContent>;
+  getChildState: () => void;
+  isReview: boolean ;
+  setIsReview: Dispatch<SetStateAction<boolean>>;
+
 }
 
-// Create the context with a default value of undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-// Provider component
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [success, setSuccess] = useState(false);
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [errMsg, setErrMsg] = useState<string>("");
+  const formFromRedux = useSelector((state: RootState) => state.form.value);
+  const [form, setForm] = useState<FormContent>(
+    formFromRedux || {
+      formId: generateUniqueId(),
+      sections: [],
+    }
+  );
+  const globalFormStateRef = useRef<FormContent>({} as FormContent);
+  const [isReview, setIsReview] = useState(false) ;
+
   useEffect(() => {
-    if (auth?.email){
+    setForm(formFromRedux);
+    // console.log("here from context");
+  }, [formFromRedux]);
+
+  const getChildState = () => {
+    globalFormStateRef.current = { ...form };
+    // console.log("got the child state and its saved at getChildState from Auth");
+  };
+
+  useEffect(() => {
+    if (auth?.email) {
       const hope = async () => {
         if (await validateLogin(auth.email, auth.pwd)) {
-          // while fetching always use await
           setSuccess(true);
         } else {
-          setErrMsg('No account corresponds to that email.') ;
+          setErrMsg("No account corresponds to that email.");
         }
-      }
+      };
 
-      hope() ;
-    } 
-    
-  }, [auth])
+      hope();
+    }
+  }, [auth]);
 
   return (
     <AuthContext.Provider
@@ -50,7 +78,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         errMsg,
         setErrMsg,
         success,
-        setSuccess
+        setSuccess,
+        form,
+        setForm,
+        globalFormStateRef,
+        getChildState,
+        isReview, 
+        setIsReview,
       }}
     >
       {children}
@@ -58,7 +92,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook for consuming the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -67,4 +100,4 @@ export const useAuth = () => {
   return context;
 };
 
-export default AuthContext; 
+export default AuthContext;
