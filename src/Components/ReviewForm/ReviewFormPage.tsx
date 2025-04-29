@@ -4,23 +4,25 @@ import { Link, useNavigate } from "react-router-dom";
 import Question from "../NavbarButtons/Question";
 import Form from "../Form/Form";
 import { ChildProps } from "../NavbarButtons/type";
-
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../state/store";
+import './ReviewFormPage.css' ;
 
 export default function ReviewFormPage(props: ChildProps) {
   const { form, setForm } = useAuth();
-  console.log(form);
-
+  // console.log(form);
+  const {isReview, setIsReview} = useAuth() ;
 
   const navigator = useNavigate() ;
 
-
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (props.getFormStateFromChildToParent) {
       props.getFormStateFromChildToParent();
     }
 
-    console.log('here at ReviewFromPage on mount');
+    // console.log('here at ReviewFromPage on mount');
     
   }, [])
 
@@ -28,6 +30,7 @@ export default function ReviewFormPage(props: ChildProps) {
 
 
   return (
+    <>
     <Form>
       <div key={form?.formId}>
         {form?.sections.map((section) => {
@@ -60,8 +63,8 @@ export default function ReviewFormPage(props: ChildProps) {
           );
         })}
           <button onClick={() => {
-            console.log('niggas');
-            
+            // console.log('niggas');
+            setIsReview(false)   ;
             navigator('/builder');
           }}>Edit Form</button>
           
@@ -69,5 +72,7 @@ export default function ReviewFormPage(props: ChildProps) {
 
       </div>
     </Form>
+    </>
+    
   );
 }
