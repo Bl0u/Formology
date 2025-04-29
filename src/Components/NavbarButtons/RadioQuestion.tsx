@@ -3,12 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { BaseQuestionProps, QuestionFormat } from "./type.ts"; // Ensure this import path is correct
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.tsx";
 import { Trash2 } from "lucide-react";
+import { useAuth } from "../Auth/Context/AuthContext.tsx";
 
 export default function RadioQuestion(props: BaseQuestionProps) {
   const [radioQuestion, setQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
   const questionRef = useRef(null) ;
+  const { isReview } = useAuth();
 
 
   useEffect(() => {
@@ -70,7 +72,41 @@ export default function RadioQuestion(props: BaseQuestionProps) {
   };
 
   return (
+<>
+  {isReview ? (
     <div className="question" ref={questionRef}>
+      <textarea
+        className="textareaQuestion"
+        onChange={(e) => {
+          setQuestion((prev) => {
+            const newQuestion = { ...prev };
+            newQuestion.question = e.target.value;
+            return newQuestion;
+          });
+        }}
+        value={radioQuestion.question ?? ""}
+        rows={1}
+        cols={40}
+        placeholder="Enter Question Here"
+      ></textarea>
+      <br />
+      {radioQuestion.values?.map((choice, index) => (
+        <div key={index} className="choice-container">
+          <div className="input-checkbox-container">
+            <input
+              className="radioButton"
+              type="radio"
+              name={radioQuestion.questionId}
+              value={choice}
+              disabled
+            />
+            <span className="option-label">{choice}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+<div className="question" ref={questionRef}>
       <ToggleSwitch
           label="move-me"
           questionId={radioQuestion?.questionId}
@@ -141,5 +177,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
       <br />
       <button className="add-choice-button" onClick={addChoice}>Add Choice</button>
     </div>
+  )}
+</>
   );
 }

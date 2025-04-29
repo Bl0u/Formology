@@ -3,11 +3,16 @@ import "../CSS/CheckBox.css"
 import { useEffect, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.tsx";
+import { useAuth } from "../Auth/Context/AuthContext.tsx";
+
 import "../CSS/CheckBox.css";
 export default function SelectOption(props: BaseQuestionProps) {
   const [checkboxQuestion, setQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
+
+  const { isReview } = useAuth();
+
   useEffect(() => {
     if (props.updateSectionsGlobalState) {
       props.updateSectionsGlobalState(checkboxQuestion);
@@ -69,80 +74,114 @@ export default function SelectOption(props: BaseQuestionProps) {
 
   }, [checkboxQuestion])
   return (
-    <>
-    
-      <div
-       ref={questionRef}
-        className="input-container question">
-        <ToggleSwitch
-          label="move-me"
-          questionId={checkboxQuestion?.questionId}
-        />
-        <button className="TrashButton">
-          <Trash2
-            className="trashPosition"
-            onClick={() => {
-              if (props.removeOption) {
-                props.removeOption(checkboxQuestion?.questionId);
-              }
-            }}
-            size={18}
-            color="#f44336"
-          />
-        </button>
-
-        <textarea
-          className="textareaQuestion"
-          onChange={(e) => {
-            setQuestion((prev) => {
-              const newQuestion = { ...prev };
-              newQuestion.question = e.target.value;
-              return newQuestion;
-            });
-          }}
-          value={checkboxQuestion.question ?? ""}
-          rows={1}
-          cols={40}
-          placeholder="Enter Question Here"
-        ></textarea>
-
-        <br />
-
-        {checkboxQuestion.values?.map((option, index) => (
-          <div key={index} className="choice-container">
-            <div className="input-checkbox-container">
-              <input
-                className="inputChoices"
-                type="text"
-                value={option}
-                onChange={(e) => updateChoice(index, e.target.value)}
-                placeholder={`Enter option number ${index + 1}`}
-              />
-              <input
-                className="checkBoxButton"
-                type="checkbox"
-                name={checkboxQuestion.questionId}
-                value={option}
-                onChange={(e) => {
-                  updateAnswer(e.target.value);
-                }}
-                // disabled={!option}
-                disabled
-              />
-            </div>
-
-            <button
-              onClick={() => removeChoice(index)}
-              className="remove-choice"
-            >
-              ✖
-            </button>
+<>
+  {isReview ? (
+    <div ref={questionRef} className="input-container question">
+      <textarea
+        className="textareaQuestion"
+        onChange={(e) => {
+          setQuestion((prev) => {
+            const newQuestion = { ...prev };
+            newQuestion.question = e.target.value;
+            return newQuestion;
+          });
+        }}
+        value={checkboxQuestion.question ?? ""}
+        rows={1}
+        cols={40}
+        placeholder="Enter Question Here"
+      ></textarea>
+      <br />
+      {checkboxQuestion.values?.map((option, index) => (
+        <div key={index} className="choice-container">
+          <div className="input-checkbox-container">
+            <input
+              className="checkBoxButton"
+              type="checkbox"
+              name={checkboxQuestion.questionId}
+              value={option}
+              disabled
+            />
+            <span className="option-label">{option}</span>
           </div>
-        ))}
-
-        <button className="add-choice-button" onClick={addOption}>Add Option</button>
+        </div>
+      ))}
+    </div>
+  ) : (
         
-      </div>
-    </>
+    <div
+    ref={questionRef}
+     className="input-container question">
+     <ToggleSwitch
+       label="move-me"
+       questionId={checkboxQuestion?.questionId}
+     />
+     <button className="TrashButton">
+       <Trash2
+         className="trashPosition"
+         onClick={() => {
+           if (props.removeOption) {
+             props.removeOption(checkboxQuestion?.questionId);
+           }
+         }}
+         size={18}
+         color="#f44336"
+       />
+     </button>
+
+     <textarea
+       className="textareaQuestion"
+       onChange={(e) => {
+         setQuestion((prev) => {
+           const newQuestion = { ...prev };
+           newQuestion.question = e.target.value;
+           return newQuestion;
+         });
+       }}
+       value={checkboxQuestion.question ?? ""}
+       rows={1}
+       cols={40}
+       placeholder="Enter Question Here"
+     ></textarea>
+
+     <br />
+
+     {checkboxQuestion.values?.map((option, index) => (
+       <div key={index} className="choice-container">
+         <div className="input-checkbox-container">
+           <input
+             className="inputChoices"
+             type="text"
+             value={option}
+             onChange={(e) => updateChoice(index, e.target.value)}
+             placeholder={`Enter option number ${index + 1}`}
+           />
+           <input
+             className="checkBoxButton"
+             type="checkbox"
+             name={checkboxQuestion.questionId}
+             value={option}
+             onChange={(e) => {
+               updateAnswer(e.target.value);
+             }}
+             // disabled={!option}
+             disabled
+           />
+         </div>
+
+         <button
+           onClick={() => removeChoice(index)}
+           className="remove-choice"
+         >
+           ✖
+         </button>
+       </div>
+     ))}
+
+     <button className="add-choice-button" onClick={addOption}>Add Option</button>
+     
+   </div>
+  )}
+</>
   );
 }

@@ -25,6 +25,7 @@ export  interface BaseQuestionProps {
   questionDetails?: QuestionFormat | null ;
   removeOption?: (id: string) => void; // Make sure this is defined
   updateSectionsGlobalState?: (newQuestion: QuestionFormat) => void;
+  isReview?: boolean ;
 }
 export interface SectionContent {
   title: string;
