@@ -14,14 +14,19 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@react-oauth/google": "^0.12.1",
+    "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.8.4",
     "framer-motion": "^12.8.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.487.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-error-boundary": "^5.0.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.4.1"
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.4.1",
+    "redux-persist": "^6.0.0",
+    "redux-persist-transform-compress": "^4.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
