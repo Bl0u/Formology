@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import { store } from "./Components/state/store";
 import { PersistGate } from "redux-persist/integration/react";
 import persistStore from "redux-persist/es/persistStore";
+import UserForm from "./Components/UserForm/UserForm";
 
 const router: RouteObject[] = [
   { path: "/", element: <Home /> },
@@ -22,6 +23,7 @@ const router: RouteObject[] = [
   { path: "/login", element: <Login /> },
   { path: "/register", element: <Register /> },
   { path: "/reviewForm", element: <ReviewFormPage /> },
+  { path: "/userFormBuilder/:formId", element: <UserForm /> },
 ];
 
 const rootElement = document.getElementById("root");
