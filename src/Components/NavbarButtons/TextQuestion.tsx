@@ -10,7 +10,8 @@ export default function TextQuestion(props: BaseQuestionProps) {
   const [textQuestion, setTextQuestion] = useState<QuestionFormat>(
     {} as QuestionFormat
   );
-  const questionRef = useRef(null);
+
+  const questionRef = useRef<HTMLDivElement | null>(null); // Apply ref to the div only
   const { isReview } = useAuth();
 
   useEffect(() => {
@@ -19,9 +20,11 @@ export default function TextQuestion(props: BaseQuestionProps) {
       behavior: "smooth",
     });
   }, []);
+
   useEffect(() => {
     if (props.updateSectionsGlobalState) {
       props.updateSectionsGlobalState(textQuestion);
+      
     }
   }, [textQuestion]);
 
@@ -36,31 +39,30 @@ export default function TextQuestion(props: BaseQuestionProps) {
           <textarea
             className="textareaQuestion"
             onChange={(e) => {
-              setTextQuestion((prev) => {
-                const newQuestion = { ...prev };
-                newQuestion.question = e.target.value;
-                return newQuestion;
-              });
+              setTextQuestion((prev) => ({
+                ...prev,
+                question: e.target.value,
+              }));
             }}
             value={textQuestion.question ?? ""}
             rows={1}
             cols={40}
             placeholder="Enter Question Here"
           ></textarea>
-
           <br></br>
 
           {/* clients response box */}
           <textarea
             className="textareaAnswer"
             onChange={(e) => {
-              setTextQuestion((prev) => {
-                const newQuestion = { ...prev };
-                newQuestion.answer = e.target.value;
-                return newQuestion;
-              });
-            }}
-            placeholder="Clients' Answers are writen here"
+              setTextQuestion((prev) => ({
+                ...prev,
+                answer: e.target.value,
+              }));
+              console.log('changed question answer', textQuestion);
+            }
+          }
+            placeholder="Clients' Answers are written here"
             rows={4}
             cols={50}
           ></textarea>
@@ -84,11 +86,10 @@ export default function TextQuestion(props: BaseQuestionProps) {
           <textarea
             className="textareaQuestion"
             onChange={(e) => {
-              setTextQuestion((prev) => {
-                const newQuestion = { ...prev };
-                newQuestion.question = e.target.value;
-                return newQuestion;
-              });
+              setTextQuestion((prev) => ({
+                ...prev,
+                question: e.target.value,
+              }));
             }}
             value={textQuestion.question ?? ""}
             rows={1}
@@ -102,14 +103,7 @@ export default function TextQuestion(props: BaseQuestionProps) {
           <textarea
             readOnly
             className="textareaAnswer"
-            onChange={(e) => {
-              setTextQuestion((prev) => {
-                const newQuestion = { ...prev };
-                newQuestion.answer = e.target.value;
-                return newQuestion;
-              });
-            }}
-            placeholder="Clients' Answers are writen here"
+            placeholder="Clients' Answers are written here"
             rows={4}
             cols={50}
           ></textarea>
