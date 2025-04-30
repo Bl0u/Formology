@@ -1,10 +1,11 @@
+import UserFormBuilder from "./Components/UserForm/UserForm.tsx";
 import "./App.css";
 import "../src/Components/CSS/Button.css";
 import "../src/Components/NavbarButtons/Navbar/Navbar.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar/Navbar.tsx";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, use } from "react";
 import {
   generateUniqueId,
   QuestionFormat,
@@ -23,6 +24,8 @@ import {
 } from "./Components/state/Form/FormSlice.tsx";
 
 function App() {
+
+  
   const navigator = useNavigate();
   const [sectionContent, setSectionContent] = useState<SectionContent>(
     {} as SectionContent
@@ -41,6 +44,9 @@ function App() {
   const [flag, setFlag] = useState(false) ;
   const dispatch = useDispatch();
   // Initialize local state with Redux state on mount
+  useEffect(() => {
+    setIsReview(false) ;
+  },[])
   useEffect(() => {
     setForm(formRedux);
     setSections(formRedux.sections || []);
@@ -324,6 +330,7 @@ function App() {
         <button
           onClick={() => {
             if (form) sendToDB(form);
+            navigator(`/userFormBuilder/${form.formId}`); // OR use query params like below
           }}
         >
           Build Form
