@@ -8,6 +8,7 @@ export interface QuestionFormat {
   question?: string;
   values?: string[] | null;
   answer?: string | string[] ;
+  required?: number ;
 }
 export interface UserInformation{
   userId: string ;
