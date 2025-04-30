@@ -10,9 +10,9 @@ import Form from "../Form/Form";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Auth/Context/AuthContext";
-
+import { UseDispatch } from "react-redux";
 function UserForm() {
-  const { isReview, setIsReview } = useAuth();
+  const { isReview, setIsReview} = useAuth();
   const { formId } = useParams<{ formId: string }>();
   const [form, setForm] = useState<FormContent>({
     formId: generateUniqueId(),
@@ -97,7 +97,7 @@ function UserForm() {
     setForm(newForm); // Update the form state with the new structure
   };
   
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async ({email, password}) => {
     if (!form) {
       alert("Form is not loaded yet.");
       return;
@@ -153,7 +153,11 @@ function UserForm() {
             ))}
           </div>
         ))}
-        <button onClick={handleFormSubmit}>Submit a response</button>
+        <button onClick={() => {
+            const email = prompt('email');
+            const password = prompt('password');
+            handleFormSubmit({ email, password });
+        }}>Submit a response</button>
       </div>
     </Form>
   );
