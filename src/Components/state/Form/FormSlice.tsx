@@ -20,6 +20,8 @@ const formSlice = createSlice({
       state.value = action.payload;
     },
     resetForm: (state) => {
+      console.log('reseted');
+      
       state.value = {
         formId: generateUniqueId(),
         sections: [],

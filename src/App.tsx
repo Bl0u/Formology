@@ -25,7 +25,7 @@ import {
 
 function App() {
 
-  
+
   const navigator = useNavigate();
   const [sectionContent, setSectionContent] = useState<SectionContent>(
     {} as SectionContent
@@ -36,7 +36,9 @@ function App() {
   const [btnName, setBtnName] = useState("Start Section");
 
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
-  const sectionRef = useRef(null);
+
+  const sectionRef = useRef<Record<string, HTMLDivElement | null>>({});
+
   // const { form, setForm } = useAuth();
   const formRedux = useSelector((state: RootState) => state.form.value); // Get form from Redux
   console.log('initial state from formRedux = ', formRedux);
@@ -50,7 +52,6 @@ function App() {
   useEffect(() => {
     setForm(formRedux);
     setSections(formRedux.sections || []);
-    setCurrSectionId(formRedux.formId || null);
   }, [formRedux]);
 
   // Sync local `form` state with Redux state when `form` changes
@@ -77,9 +78,9 @@ function App() {
   }, [sections]);
 
   // Scroll to the current section when `currSectionId` changes
-  useEffect(() => {
-    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currSectionId]);
+  // useEffect(() => {
+  //   sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [currSectionId]);
 
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
     // Create a new array with the updated question
@@ -247,10 +248,10 @@ function App() {
     });
   };
   const handleClickStartSection = () => {
-    const hope = prompt("Please provide the section name:");
-    if (!hope) return;
+    const title = prompt("Please provide the section name:");
+    if (!title) return;
     const newSection: SectionContent = {
-      title: hope,
+      title,
       sectionId: generateUniqueId(),
       questions: [],
     };
@@ -331,6 +332,7 @@ function App() {
           onClick={() => {
             if (form) sendToDB(form);
             navigator(`/userFormBuilder/${form.formId}`); // OR use query params like below
+            dispatch(resetForm()) ;
           }}
         >
           Build Form
@@ -353,7 +355,7 @@ function App() {
           {formRedux?.sections.map((section) => {
             return (
               <>
-                <div key={section.sectionId || "fallback-key"} ref={sectionRef}>
+                <div key={section.sectionId || "fallback-key"}>
                   <textarea
                     className="textareaQuestion"
                     name="formTitle"
