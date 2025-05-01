@@ -1,11 +1,19 @@
+import { generateUniqueId, FormContent } from "../../NavbarButtons/type";
 import {
-  generateUniqueId,
-  FormContent,
-} from "../../NavbarButtons/type";
-import { useRef, createContext, useState, ReactNode, Dispatch, SetStateAction, useEffect, useContext } from "react";
+  useRef,
+  createContext,
+  useState,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useContext,
+} from "react";
 import validateLogin from "../../DB/LoginDB";
 import { useSelector } from "react-redux";
 import { RootState } from "../../state/store";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 interface AuthState {
   email: string;
@@ -25,14 +33,16 @@ interface AuthContextType {
   setForm: Dispatch<SetStateAction<FormContent>>;
   globalFormStateRef: React.MutableRefObject<FormContent>;
   getChildState: () => void;
-  isReview: boolean ;
+  isReview: boolean;
   setIsReview: Dispatch<SetStateAction<boolean>>;
-
+  isLogged: boolean ;
+  setIsLogged: Dispatch<SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [isLogged, setIsLogged] = useState(false) ;
   const [success, setSuccess] = useState(false);
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [errMsg, setErrMsg] = useState<string>("");
@@ -44,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   );
   const globalFormStateRef = useRef<FormContent>({} as FormContent);
-  const [isReview, setIsReview] = useState(false) ;
+  const [isReview, setIsReview] = useState(false);
 
   useEffect(() => {
     setForm(formFromRedux);
@@ -56,18 +66,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // console.log("got the child state and its saved at getChildState from Auth");
   };
 
-  useEffect(() => {
-    if (auth?.email) {
-      const hope = async () => {
-        if (await validateLogin(auth.email, auth.pwd)) {
-          setSuccess(true);
-        } else {
-          setErrMsg("No account corresponds to that email.");
-        }
-      };
+  
 
-      hope();
-    }
+  const location = useLocation();
+  const navigator = useNavigate();
+  const from = location.state?.from || "/";
+
+  useEffect(() => {
+    setIsLogged(false) ;
+    const handleLogin = async () => {
+      try {
+        if (auth?.email) {
+          const isValid = await validateLogin(auth.email, auth.pwd);
+          if (isValid) {
+            // console.log(from);
+            
+            navigator(from, { replace: true });
+            
+            setSuccess(true) ;
+            setIsLogged(true) ;
+          } else {
+            setErrMsg("No account corresponds to that email.");
+          }
+        }
+      } catch (error) {
+        console.error("Error during login validation:", error);
+        setErrMsg("An error occurred during login. Please try again.");
+      }
+    };
+
+    handleLogin();
   }, [auth]);
 
   return (
@@ -83,8 +111,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setForm,
         globalFormStateRef,
         getChildState,
-        isReview, 
+        isReview,
         setIsReview,
+        isLogged, 
+        setIsLogged
       }}
     >
       {children}
