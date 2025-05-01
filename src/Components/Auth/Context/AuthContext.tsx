@@ -27,6 +27,8 @@ interface AuthContextType {
   setAuth: Dispatch<SetStateAction<AuthState | null>>;
   errMsg: string;
   setErrMsg: Dispatch<SetStateAction<string>>;
+  emailLogged: string;
+  setEmailLogged: Dispatch<SetStateAction<string>>;
   success: boolean;
   setSuccess: Dispatch<SetStateAction<boolean>>;
   form: FormContent | null;
@@ -43,6 +45,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLogged, setIsLogged] = useState(false) ;
+  const [emailLogged, setEmailLogged] = useState('') ;
   const [success, setSuccess] = useState(false);
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [errMsg, setErrMsg] = useState<string>("");
@@ -80,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const isValid = await validateLogin(auth.email, auth.pwd);
           if (isValid) {
             // console.log(from);
-            
+            setEmailLogged(auth.email)  ;
             navigator(from, { replace: true });
             
             setSuccess(true) ;
@@ -114,7 +117,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isReview,
         setIsReview,
         isLogged, 
-        setIsLogged
+        setIsLogged,
+        emailLogged,
+        setEmailLogged,
       }}
     >
       {children}
