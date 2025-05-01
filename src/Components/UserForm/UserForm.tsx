@@ -8,11 +8,11 @@ import {
 } from "../NavbarButtons/type";
 import Form from "../Form/Form";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../Auth/Context/AuthContext";
 import { UseDispatch } from "react-redux";
 function UserForm() {
-  const { isReview, setIsReview} = useAuth();
+  const { isReview, setIsReview } = useAuth();
   const { formId } = useParams<{ formId: string }>();
   const [form, setForm] = useState<FormContent>({
     formId: generateUniqueId(),
@@ -24,8 +24,8 @@ function UserForm() {
 
   // Fetch form data when the component mounts
   useEffect(() => {
-    console.log('First useEffect');
-    
+    console.log("First useEffect");
+
     const fetchForm = async () => {
       if (!formId) {
         setError("No form ID provided in the URL.");
@@ -40,7 +40,6 @@ function UserForm() {
         );
         const fetchedForm: FormContent = response.data.data;
         setForm(fetchedForm);
-        
 
         // Only set `isReview` if it hasn't already been set
         if (!isReview) {
@@ -60,49 +59,50 @@ function UserForm() {
   // Update sections in the global state
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
     if (!form) return;
-  
+
     // Create a new array with the updated question
     const updatedSections = form.sections.map((section) => {
       if (section.sectionId !== newQuestion.sectionId) {
         return section; // Return the section unchanged
       }
-  
+
       const updatedQuestions = section.questions?.map((question) => {
         if (question.question_id === newQuestion.question_id) {
           return newQuestion; // Replace the target question with the updated one
         }
         return question; // Return other questions unchanged
       });
-  
+
       return {
         ...section,
         questions: updatedQuestions,
       };
     });
-  
+
     // Compare updated sections with the current form's sections
     if (JSON.stringify(updatedSections) === JSON.stringify(form.sections)) {
-      console.log("No changes detected in form sections. Skipping state update.");
+      console.log(
+        "No changes detected in form sections. Skipping state update."
+      );
       return; // Exit early if no changes are detected
     }
-  
+
     // Update the global state with the new sections
     const newForm: FormContent = {
       ...form,
       sections: updatedSections,
     };
-  
+
     console.log("New Form:", newForm);
-  
+
     setForm(newForm); // Update the form state with the new structure
   };
-  
-  const handleFormSubmit = async ({email, password}) => {
-    if (!form) {
-      alert("Form is not loaded yet.");
-      return;
-    }
 
+  const navigator = useNavigate();
+
+  const { isLogged } = useAuth();
+  const handleFormSubmit = async () => {
+    if (!isLogged) return;
     try {
       const response = await axios.post(
         "http://localhost/Form/Response.php",
@@ -119,15 +119,7 @@ function UserForm() {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div style={{ color: "red" }}>{error}</div>;
   if (!form?.sections) return <div>No form data available.</div>;
-//   form.sections.forEach((section) => {
-//     section?.questions?.forEach(question => {
-//         console.log(question);
-        
-//         console.log(question.question_id);
-        
-//     });
-//   });
-  
+
   return (
     <Form>
       <div key={form.formId}>
@@ -153,11 +145,17 @@ function UserForm() {
             ))}
           </div>
         ))}
-        <button onClick={() => {
-            const email = prompt('email');
-            const password = prompt('password');
-            handleFormSubmit({ email, password });
-        }}>Submit a response</button>
+        <button
+          onClick={() => {
+            navigator("/login", {
+              state: { from: location.pathname },
+              replace: true,
+            });
+            handleFormSubmit();
+          }}
+        >
+          Submit a response
+        </button>
       </div>
     </Form>
   );
