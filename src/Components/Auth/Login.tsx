@@ -37,6 +37,7 @@ const Login: React.FC = () => {
   const emailRef = useRef(null);
   const errRef = useRef(null);
 
+  const {emailLogged, setEmailLogged} = useAuth() ;
   useEffect(() => {
     const inputRef = emailRef.current as HTMLInputElement | null;
     inputRef?.focus();
@@ -56,12 +57,8 @@ const Login: React.FC = () => {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setAuth({ email, pwd });
-    console.log(location);
     
     if (from !== "/") {
-
-      // setSuccess(false) ;
-      console.log('here');
       
       navigator(from, { replace: true });
     }
