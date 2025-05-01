@@ -99,17 +99,17 @@ function UserForm() {
   };
 
   const navigator = useNavigate();
-
+  const {emailLogged} = useAuth() ;
   const { isLogged } = useAuth();
   const handleFormSubmit = async () => {
     if (!isLogged) return;
     try {
       const response = await axios.post(
         "http://localhost/Form/Response.php",
-        form
+        {params: {form, emailLogged}}
       );
       console.log("Form submitted successfully:", response.data);
-      alert("Your response has been submitted successfully!");
+      navigator('/') ;
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Failed to submit the form. Please try again.");
@@ -147,11 +147,13 @@ function UserForm() {
         ))}
         <button
           onClick={() => {
-            navigator("/login", {
-              state: { from: location.pathname },
-              replace: true,
-            });
-            handleFormSubmit();
+            if (isLogged === false){
+              navigator("/login", {
+                state: { from: location.pathname },
+                replace: true,
+              });
+            }
+              handleFormSubmit();
           }}
         >
           Submit a response
