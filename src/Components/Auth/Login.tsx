@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import "./Auth.css";
 import { jwtDecode } from "jwt-decode";
@@ -37,7 +37,7 @@ const Login: React.FC = () => {
   const emailRef = useRef(null);
   const errRef = useRef(null);
 
-
+  const {emailLogged, setEmailLogged, setIsLogged} = useAuth() ;
   useEffect(() => {
     const inputRef = emailRef.current as HTMLInputElement | null;
     inputRef?.focus();
@@ -49,11 +49,17 @@ const Login: React.FC = () => {
     setErrMsg("");
   }, [email, pwd]);
 
-  
+  const location = useLocation();
+  const navigator = useNavigate();
+  const from = location.state?.from || "/";
+
+  // Navigate to the "from" location or the default path
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setAuth({email, pwd}) ;
-
+    setAuth({ email, pwd });
+    if (from !== "/") {
+      navigator(from, { replace: true });
+    }
     return;
   }
 
@@ -74,8 +80,6 @@ const Login: React.FC = () => {
     }
   }, [success]);
 
-
-  
   return (
     <>
       {success ? (
@@ -203,9 +207,7 @@ const Login: React.FC = () => {
               </p>
               <form>
                 <div className="form-group">
-                  <label htmlFor="email">
-                    Email
-                  </label>
+                  <label htmlFor="email">Email</label>
                   <motion.input
                     ref={emailRef}
                     required

@@ -18,18 +18,28 @@ const formSlice = createSlice({
   reducers: {
     setFormRedux: (state, action) => {
       state.value = action.payload;
-    //   console.log('here from setFormRedux payload = ', action.payload);
-    //   console.log('here from setFormRedux value = ', state.value);
-      
     },
     resetForm: (state) => {
+      console.log('reseted');
+      
       state.value = {
         formId: generateUniqueId(),
         sections: [],
       };
     },
+    isRequired: (state, action) => {
+      state.value.sections = state.value.sections.map((section) => ({
+        ...section,
+        questions: section.questions?.map((question) =>
+          question.questionId === action.payload
+            ? { ...question, required: question.required === 1 ? 0 : 1 } // Toggle logic
+            : question
+        ),
+      }));
+      console.log("here from required = ", action.payload);
+    },
   },
 });
 
-export const { setFormRedux, resetForm} = formSlice.actions;
+export const { setFormRedux, resetForm, isRequired } = formSlice.actions;
 export default formSlice.reducer;

@@ -1,10 +1,11 @@
+import UserFormBuilder from "./Components/UserForm/UserForm.tsx";
 import "./App.css";
 import "../src/Components/CSS/Button.css";
 import "../src/Components/NavbarButtons/Navbar/Navbar.css";
 import Question from "./Components/NavbarButtons/Question";
 import Form from "./Components/Form/Form";
 import Navbar from "./Components/NavbarButtons/Navbar/Navbar.tsx";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, use } from "react";
 import {
   generateUniqueId,
   QuestionFormat,
@@ -23,6 +24,8 @@ import {
 } from "./Components/state/Form/FormSlice.tsx";
 
 function App() {
+
+
   const navigator = useNavigate();
   const [sectionContent, setSectionContent] = useState<SectionContent>(
     {} as SectionContent
@@ -33,7 +36,9 @@ function App() {
   const [btnName, setBtnName] = useState("Start Section");
 
   const [currSectionId, setCurrSectionId] = useState<string | null>(null);
-  const sectionRef = useRef(null);
+
+  const sectionRef = useRef<Record<string, HTMLDivElement | null>>({});
+
   // const { form, setForm } = useAuth();
   const formRedux = useSelector((state: RootState) => state.form.value); // Get form from Redux
   console.log('initial state from formRedux = ', formRedux);
@@ -42,9 +47,11 @@ function App() {
   const dispatch = useDispatch();
   // Initialize local state with Redux state on mount
   useEffect(() => {
+    setIsReview(false) ;
+  },[])
+  useEffect(() => {
     setForm(formRedux);
     setSections(formRedux.sections || []);
-    setCurrSectionId(formRedux.formId || null);
   }, [formRedux]);
 
   // Sync local `form` state with Redux state when `form` changes
@@ -71,9 +78,9 @@ function App() {
   }, [sections]);
 
   // Scroll to the current section when `currSectionId` changes
-  useEffect(() => {
-    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currSectionId]);
+  // useEffect(() => {
+  //   sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [currSectionId]);
 
   const updateSectionsGlobalState = (newQuestion: QuestionFormat) => {
     // Create a new array with the updated question
@@ -241,10 +248,10 @@ function App() {
     });
   };
   const handleClickStartSection = () => {
-    const hope = prompt("Please provide the section name:");
-    if (!hope) return;
+    const title = prompt("Please provide the section name:");
+    if (!title) return;
     const newSection: SectionContent = {
-      title: hope,
+      title,
       sectionId: generateUniqueId(),
       questions: [],
     };
@@ -297,6 +304,11 @@ function App() {
         <button className="navbar-buttons" onClick={handleClickStartSection}>
           {btnName}
         </button>
+        <button onClick={() => {
+          navigator('/dashboard') ;
+        }}>
+          Dashboard
+        </button>
         <button
           className="navbar-buttons"
           onClick={() => {
@@ -324,6 +336,8 @@ function App() {
         <button
           onClick={() => {
             if (form) sendToDB(form);
+            navigator(`/userFormBuilder/${form.formId}`); // OR use query params like below
+            dispatch(resetForm()) ;
           }}
         >
           Build Form
@@ -346,7 +360,7 @@ function App() {
           {formRedux?.sections.map((section) => {
             return (
               <>
-                <div key={section.sectionId || "fallback-key"} ref={sectionRef}>
+                <div key={section.sectionId || "fallback-key"}>
                   <textarea
                     className="textareaQuestion"
                     name="formTitle"

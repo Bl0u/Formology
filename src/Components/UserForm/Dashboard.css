@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+  background-color: white;
+  color: #333; /* Darker text for better contrast */
+}
+
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Left Side Panel */
+.left-panel {
+  width: 450px; /* Fixed width */
+  height: 100vh;
+  background-color: #f5f5f5; /* Light gray background */
+  padding: 20px;
+  padding-top: 100px;
+  border-right: 1px solid #ddd;
+  overflow-y: auto; /* Vertical scroll only */
+}
+
+.form-list,
+.email-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.form-item,
+.email-item {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.form-item:hover,
+.email-item:hover {
+  transform: translateX(5px);
+}
+
+/* Right Side Panel */
+.right-panel {
+  flex: 1;
+  height: 100vh;
+  padding: 30px;
+  background-color: white;
+  overflow-x: auto; /* Horizontal scroll */
+}
+
+.response-table-container {
+  min-width: 800px; /* Forces horizontal scroll when needed */
+}
+
+.response-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.response-table th,
+.response-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.response-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
