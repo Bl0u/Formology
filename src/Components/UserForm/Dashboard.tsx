@@ -13,6 +13,10 @@ const Dashboard = () => {
   const [responseDetails, setResponseDetails] = useState<{ formId: string; email: string; questions: { question: string; answer_text: string; display_order: number }[] } | null>(null); // Stores the response details for the selected email
   const {isLogged, setIsLogged} = useAuth() ;
   useEffect(() => {
+    console.log('from dashboard', isLogged);
+    
+  }, [])
+  useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch list of all forms
@@ -27,10 +31,6 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    console.log(responseDetails);
-  }, [responseDetails]);
 
   const handleResponseClick = async (formId: string) => {
     try {

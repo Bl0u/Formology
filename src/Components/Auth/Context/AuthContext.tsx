@@ -74,9 +74,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const navigator = useNavigate();
   const from = location.state?.from || "/";
-
+useEffect(() => {
+  console.log('useEffect on isLogged', isLogged);
+  
+}, [isLogged])
   useEffect(() => {
-    setIsLogged(false) ;
     const handleLogin = async () => {
       try {
         if (auth?.email) {
@@ -88,6 +90,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             
             setSuccess(true) ;
             setIsLogged(true) ;
+            console.log('from authcontext', isLogged);
+            
           } else {
             setErrMsg("No account corresponds to that email.");
           }

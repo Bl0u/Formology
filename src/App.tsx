@@ -304,6 +304,11 @@ function App() {
         <button className="navbar-buttons" onClick={handleClickStartSection}>
           {btnName}
         </button>
+        <button onClick={() => {
+          navigator('/dashboard') ;
+        }}>
+          Dashboard
+        </button>
         <button
           className="navbar-buttons"
           onClick={() => {

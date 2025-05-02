@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./Components/Auth/Context/AuthContext";
 // import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
-  const navigator = useNavigate() ;
+  const navigator = useNavigate();
   // const navigator = useNavigate() ;
   const [scrollY, setScrollY] = useState(0);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [activeSection, setActiveSection] = useState("hero");
-
+  const { isLogged } = useAuth();
   // Handle scroll position for parallax and section tracking
   useEffect(() => {
     const handleScroll = () => {
@@ -96,19 +97,19 @@ const Home: React.FC = () => {
               repeatType: "reverse",
             }}
           ></motion.div>
-          <span>MINIMALIST</span>
+          <span>Formology</span>
         </div>
 
         <nav>
           <ul>
-            {["Home", "About", "Projects",'Register', "Login", "Contact"].map((item) => (
+            {["Home", "About", "Projects", "Contact"].map((item) => (
               <motion.li
                 key={item}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <a
-                  href={item === 'Login' ? '/login': (item === 'Register' ? '/register': `#${item.toLowerCase()}`)}
+                  href={`#${item.toLowerCase()}`}
                   className={
                     activeSection === item.toLowerCase() ? "active" : ""
                   }
@@ -117,6 +118,50 @@ const Home: React.FC = () => {
                 </a>
               </motion.li>
             ))}
+
+            {!isLogged && (
+              <>
+                <motion.li
+                  key="Register"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <a
+                    href="/register"
+                    className={activeSection === "register" ? "active" : ""}
+                  >
+                    Register
+                  </a>
+                </motion.li>
+                <motion.li
+                  key="Login"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <a
+                    href="/login"
+                    className={activeSection === "login" ? "active" : ""}
+                  >
+                    Login
+                  </a>
+                </motion.li>
+              </>
+            )}
+
+            {isLogged && (
+              <motion.li
+                key="Dashboard"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <a
+                  href="/dashboard"
+                  className={activeSection === "dashboard" ? "active" : ""}
+                >
+                  Dashboard
+                </a>
+              </motion.li>
+            )}
           </ul>
         </nav>
       </motion.header>
@@ -171,7 +216,7 @@ const Home: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
-                navigator('/builder') ;
+                navigator("/builder");
               }}
             >
               Get Started
