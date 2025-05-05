@@ -150,9 +150,7 @@ export default function RadioQuestion(props: BaseQuestionProps) {
                   type="radio"
                   name={radioQuestion.questionId}
                   value={choice}
-                  
                   disabled
-
                 />
               </div>
               <button

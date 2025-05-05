@@ -63,7 +63,6 @@ export default function ReviewFormPage(props: ChildProps) {
           );
         })}
           <button onClick={() => {
-            // console.log('niggas');
             setIsReview(false)   ;
             navigator('/builder');
           }}>Edit Form</button>

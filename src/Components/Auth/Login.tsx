@@ -41,7 +41,6 @@ const Login: React.FC = () => {
   useEffect(() => {
     const inputRef = emailRef.current as HTMLInputElement | null;
     inputRef?.focus();
-    // console.log("niggas");
   }, []);
 
   useEffect(() => {

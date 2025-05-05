@@ -227,8 +227,6 @@ const Register = () => {
                   </label>
                   <motion.input
                     ref={userRef}
-                    whileFocus={{ scale: 1.01 }}
-                    transition={{ duration: 0.2 }}
                     type="text"
                     required
                     value={user}
