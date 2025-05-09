@@ -24,7 +24,7 @@ function UserForm() {
 
   // Fetch form data when the component mounts
   useEffect(() => {
-    console.log("First useEffect");
+    // console.log("First useEffect");
 
     const fetchForm = async () => {
       if (!formId) {
@@ -81,9 +81,9 @@ function UserForm() {
 
     // Compare updated sections with the current form's sections
     if (JSON.stringify(updatedSections) === JSON.stringify(form.sections)) {
-      console.log(
-        "No changes detected in form sections. Skipping state update."
-      );
+      // console.log(
+      //   "No changes detected in form sections. Skipping state update."
+      // );
       return; // Exit early if no changes are detected
     }
 
@@ -93,7 +93,7 @@ function UserForm() {
       sections: updatedSections,
     };
 
-    console.log("New Form:", newForm);
+    // console.log("New Form:", newForm);
 
     setForm(newForm); // Update the form state with the new structure
   };

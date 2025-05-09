@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./Home.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useRoutes } from "react-router-dom";
 import { useAuth } from "./Components/Auth/Context/AuthContext";
 // import { useNavigate } from "react-router-dom";
+
 
 const Home: React.FC = () => {
   const navigator = useNavigate();
@@ -160,6 +161,16 @@ const Home: React.FC = () => {
                 >
                   Dashboard
                 </a>
+                <motion.button
+                  className={activeSection === "dashboard" ? "active" : ""}
+                  onClick={() => {
+                    localStorage.removeItem('login') ;
+                    window.location.reload();
+
+                  }}
+                >
+                  log out
+                </motion.button>
               </motion.li>
             )}
           </ul>

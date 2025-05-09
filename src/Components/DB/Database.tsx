@@ -3,14 +3,18 @@ import axios from "axios";
 
 export async function sendToDB(form: FormContent) {
   // const sectionContent = form.sections ;
-  console.log("Sending data to PHP server...", JSON.stringify(form));
+  const newForm = {
+    ...form, 
+    loggedInformation: JSON.parse(localStorage.getItem('login') || '{}')
+  }
+  console.log("Sending data to PHP server...", JSON.stringify(newForm));
 
   try {
     // Method 1: Using explicit JSON.stringify and content type
     const response = await axios({
       method: "post",
       url: "http://localhost/Form/sections.php",
-      data: JSON.stringify(form), // Explicitly stringify the data
+      data: JSON.stringify(newForm), // Explicitly stringify the data
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

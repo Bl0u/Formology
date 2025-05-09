@@ -20,7 +20,7 @@ const IdleRedirect = ({ isLogged }: { isLogged: boolean }) => {
             replace: true,
           });
         }
-      }, 5000); // 10 seconds
+      }, 3000); // 10 seconds
     };
 
     // Attach event listeners to detect user activity

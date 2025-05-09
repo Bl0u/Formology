@@ -1,3 +1,4 @@
+import axios from "axios";
 import UserFormBuilder from "./Components/UserForm/UserForm.tsx";
 import "./App.css";
 import "../src/Components/CSS/Button.css";
@@ -18,19 +19,14 @@ import { useAuth } from "./Components/Auth/Context/AuthContext.tsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Components/state/store.tsx";
-import {
-  setFormRedux,
-  resetForm,
-} from "./Components/state/Form/FormSlice.tsx";
+import { setFormRedux, resetForm } from "./Components/state/Form/FormSlice.tsx";
 
 function App() {
-
-
   const navigator = useNavigate();
   const [sectionContent, setSectionContent] = useState<SectionContent>(
     {} as SectionContent
   );
-  const {isReview, setIsReview} = useAuth() ;
+  const { isReview, setIsReview } = useAuth();
   const [sections, setSections] = useState<SectionContent[]>([]);
 
   const [btnName, setBtnName] = useState("Start Section");
@@ -41,33 +37,44 @@ function App() {
 
   // const { form, setForm } = useAuth();
   const formRedux = useSelector((state: RootState) => state.form.value); // Get form from Redux
-  console.log('initial state from formRedux = ', formRedux);
+  // console.log('initial state from formRedux = ', formRedux);
   const [form, setForm] = useState<FormContent>(formRedux); // Initialize local state from Redux
-  const [flag, setFlag] = useState(false) ;
+  const [flag, setFlag] = useState(false);
   const dispatch = useDispatch();
   // Initialize local state with Redux state on mount
   useEffect(() => {
-    setIsReview(false) ;
-  },[])
+    setIsReview(false);
+  }, []);
   useEffect(() => {
     setForm(formRedux);
     setSections(formRedux.sections || []);
   }, [formRedux]);
 
   // Sync local `form` state with Redux state when `form` changes
-  useEffect(() => {console.log('answer = ', flag)}, [flag]) ;
+  // useEffect(() => {console.log('answer = ', flag)}, [flag]) ;
+  const [forms, setForms] = useState([]);
+  const fetchData = async () => {
+    try {
+      // Fetch list of all forms
+      const responseForms = await axios.get("http://localhost/Form/forms.php");
+      if (responseForms?.data) {
+        setForms(responseForms.data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
   useEffect(() => {
-    console.log('formRedux = ', formRedux);
-    console.log('form = ', form);
-    console.log('first = ', (JSON.stringify(form) !== JSON.stringify(formRedux)) );
-    console.log('second = ', (form.sections.length || flag));
-    
-    
-    if ((JSON.stringify(form) !== JSON.stringify(formRedux)) && (form.sections.length || flag)) {
-      console.log('im in here');
-      
-      setFlag(false) ;
-      console.log("Syncing form with Redux, length = ", form.sections.length);
+    if (
+      JSON.stringify(form) !== JSON.stringify(formRedux) &&
+      (form.sections.length || flag)
+    ) {
+      // console.log('im in here');
+
+      setFlag(false);
+      // console.log("Syncing form with Redux, length = ", form.sections.length);
+
       dispatch(setFormRedux(form));
     }
   }, [form, formRedux, dispatch]);
@@ -279,12 +286,12 @@ function App() {
     });
   };
   const handleDeleteSection = (sectionId: string) => {
-    setFlag(true) ;
-    console.log('flag = ', flag);
-    
+    setFlag(true);
+    // console.log('flag = ', flag);
+
     setSections((prev) => {
-      console.log('delete this section = ', sectionId);
-      
+      // console.log('delete this section = ', sectionId);
+
       // Filter out the section with the matching ID
       const newSections = prev.filter(
         (section) => section.sectionId !== sectionId
@@ -294,8 +301,8 @@ function App() {
     });
   };
   // console.log(form);
-  console.log('initial state from formRedux = ', formRedux);
-  console.log('initial state from form= ', form);
+  // console.log('initial state from formRedux = ', formRedux);
+  // console.log('initial state from form= ', form);
   // setForm(formRedux) ;
 
   return (
@@ -304,9 +311,11 @@ function App() {
         <button className="navbar-buttons" onClick={handleClickStartSection}>
           {btnName}
         </button>
-        <button onClick={() => {
-          navigator('/dashboard') ;
-        }}>
+        <button
+          onClick={() => {
+            navigator("/dashboard");
+          }}
+        >
           Dashboard
         </button>
         <button
@@ -335,17 +344,32 @@ function App() {
         </button>
         <button
           onClick={() => {
+            fetchData();
+            const flagId = () => {
+              forms.forEach((formInside) => {
+                if (formInside.form_id === form.formId) {
+                  console.log(formInside.form_id, " === ", form.formId);
+                }
+                console.log(formInside.form_id, " !== ", form.formId);
+              });
+            };
+            if (flagId) {
+              console.log("not found", forms);
+              console.log("not found", form.formId);
+              form.formId=generateUniqueId() ;
+            }
+
             if (form) sendToDB(form);
+            dispatch(resetForm());
             navigator(`/userFormBuilder/${form.formId}`); // OR use query params like below
-            dispatch(resetForm()) ;
           }}
         >
           Build Form
         </button>
         <button
           onClick={() => {
-            setIsReview(true) ;
-            
+            setIsReview(true);
+
             navigator("/reviewForm");
           }}
         >
@@ -377,7 +401,7 @@ function App() {
                       <>
                         <div className="eachQuestion">
                           <Question
-                          isReview={isReview}
+                            isReview={isReview}
                             updateSectionsGlobalState={
                               updateSectionsGlobalState
                             }
@@ -404,7 +428,7 @@ function App() {
                       className="main-button"
                       onMouseOver={() => {
                         setCurrSectionId(section.sectionId);
-                        console.log(currSectionId);
+                        // console.log(currSectionId);
                       }}
                     >
                       Pick a service
