@@ -40,7 +40,7 @@ if (!rootElement) {
 
   createRoot(rootElement).render(
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
+      {/* <PersistGate persistor={persistor}> */}
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
           <ErrorBoundary FallbackComponent={FallbackComponent}>
             <RouterProvider router={createBrowserRouter(router)}>
@@ -49,7 +49,7 @@ if (!rootElement) {
             </RouterProvider>
           </ErrorBoundary>
         </GoogleOAuthProvider>
-      </PersistGate>
+      {/* </PersistGate> */}
     </Provider>
   );
 }

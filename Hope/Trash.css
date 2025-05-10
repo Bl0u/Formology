@@ -1,0 +1,12 @@
+.trashPosition{
+  margin: 10px;
+}
+.TrashButton{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    position: relative;
+    bottom: 48px;
+    left: 580px ;
+  }
