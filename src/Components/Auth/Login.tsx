@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import "./Auth.css";
-import "./Login.css" ;
+// import "./Login.css" ;
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import validateLogin from "../DB/LoginDB";

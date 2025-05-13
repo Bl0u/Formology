@@ -72,9 +72,6 @@ const Home: React.FC = () => {
     transform: `translate(${cursorPosition.x / 100}px, ${
       cursorPosition.y / 100
     }px)`,
-    backgroundColor: "black", // Explicitly set background color
-    minHeight: "100vh", // Ensure it fills the viewport height
-    width: "100%",
   };
 
   return (
@@ -180,7 +177,6 @@ const Home: React.FC = () => {
         </nav>
       </motion.header>
 
-
       {/* Hero Section */}
       <section id="hero" className="hero-section">
         <motion.div
@@ -253,11 +249,7 @@ const Home: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <img
-            src="src\ChatGPT Image May 3, 2025, 04_53_51 AM.png"
-            alt="formology Design"
-            className="hero-image-content"
-          />
+          <div className="geometric-shape"></div>
         </motion.div>
       </section>
 
@@ -272,67 +264,89 @@ const Home: React.FC = () => {
           About
         </motion.h2>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          viewport={{ once: true, amount: 0.3 }}
-          style={{
-            color: "gold",
-            fontSize: "1.2rem",
-            maxWidth: "800px",
-            margin: "0 auto",
-          }}
-        >
-          formology is your ultimate platform for crafting sleek, powerful, and
-          intuitive digital experiences. Like Google Forms, it simplifies the
-          process of gathering and organizing information, but with unparalleled
-          elegance and flexibility. Create stunning forms, surveys, and
-          interactive interfaces with drag-and-drop ease, customize every detail
-          to match your vision, and integrate seamlessly with your favorite
-          tools. With real-time analytics, advanced logic, and a formology
-          aesthetic, formology empowers you to build not just forms, but
-          experiences that captivate and convert—effortlessly.
-        </motion.p>
+        <div className="feature-cards">
+          {[
+            {
+              title: "Minimalist",
+              description: "Less is more. Focus on what really matters.",
+            },
+            {
+              title: "Animated",
+              description: "Subtle movements bring your content to life.",
+            },
+            {
+              title: "Responsive",
+              description: "Looks great on every device, every time.",
+            },
+          ].map((feature, index) => (
+            <motion.div
+              className="feature-card"
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{
+                y: -10,
+                boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <div className="card-icon">
+                <motion.div
+                  className="icon-circle"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    delay: index * 0.5,
+                  }}
+                ></motion.div>
+              </div>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
-      {/* How To Use Section */}
-      <section id="how-to-use" className="how-to-use-section">
+      {/* Projects Section */}
+      <section id="projects" className="projects-section">
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true, amount: 0.3 }}
         >
-          How To Use
+          Projects
         </motion.h2>
 
-        <motion.div
-          className="video-container"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <video
-            src="/formology-tutorial.mp4"
-            controls
-            className="tutorial-video"
-            poster="/tutorial-poster.jpg"
-          >
-            Your browser does not support the video tag.
-          </video>
-          <p style={{ color: "gold", textAlign: "center", marginTop: "1rem" }}>
-            Watch our tutorial to learn how to create stunning forms and
-            interfaces with formology.
-          </p>
-        </motion.div>
+        <div className="projects-gallery">
+          {[1, 2, 3, 4].map((item, index) => (
+            <motion.div
+              className="project-item"
+              key={index}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <div className="project-overlay">
+                <h3>Project {item}</h3>
+                <p>Black & White Design</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* Footer */}
       <footer>
         <div className="footer-content">
-          <p>© 2025 formology Design.</p>
+          <p>© 2025 Minimalist Design. Created by Bl0u.</p>
           <div className="social-links">
             {["Twitter", "Instagram", "LinkedIn"].map((social, index) => (
               <motion.a
