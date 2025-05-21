@@ -15,7 +15,7 @@ export default function Section() {
         console.log(newName);
     };
     const setSectionName = () => {
-        const sectionName = prompt('gimme the damn section name nigga')
+        const sectionName = prompt('gimme the damn section name')
         return sectionName ;
     }
 

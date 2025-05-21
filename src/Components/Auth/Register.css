@@ -1,120 +1,120 @@
 /* Success page styling */
 .success-container {
-    text-align: center;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    position: relative;
-  }
-  
-  .success-icon-wrapper {
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .success-icon {
-    height: 90px;
-    width: 90px;
-    background-color: rgba(0, 0, 0, 0.02);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid black;
-  }
-  
-  .success-icon svg {
-    font-size: 40px;
-    color: #000;
-  }
-  
-  .success-title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    color: #000;
-  }
-  
-  .success-message {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-  
-  .countdown {
-    font-weight: 700;
-    color: #000;
-    font-size: 1.2rem;
-  }
-  
-  .redirect-progress {
-    height: 2px;
-    background-color: #000;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-  
-  .success-meta {
-    margin-top: auto;
-    width: 100%;
-  }
-  
-  /* Animation for pulsing countdown */
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-  }
-  
-  .countdown {
-    display: inline-block;
-    animation: pulse 1s infinite;
-  }
+  text-align: center;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  position: relative;
+}
 
-  /* Screen reader only */
+.success-icon-wrapper {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-icon {
+  height: 90px;
+  width: 90px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+}
+
+.success-icon svg {
+  font-size: 40px;
+  color: #000;
+}
+
+.success-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.success-message {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.countdown {
+  font-weight: 700;
+  color: #000;
+  font-size: 1.2rem;
+}
+
+.redirect-progress {
+  height: 2px;
+  background-color: #000;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.success-meta {
+  margin-top: auto;
+  width: 100%;
+}
+
+/* Animation for pulsing countdown */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.countdown {
+  display: inline-block;
+  animation: pulse 1s infinite;
+}
+
+/* Screen reader only */
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-  
-  /* Instructions specific to screen readers */
-  .instructions {
-    background-color: rgba(0, 0, 0, 0.02);
-    border-radius: 6px;
-    padding: 0.8rem 1rem;
-    margin-top: 0.25rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.85rem;
-    color: #666;
-    line-height: 1.6;
-    border-left: 3px solid rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: flex-start;
-  }
-  
-  .instructions svg {
-    color: #333;
-    margin-right: 0.7rem;
-    font-size: 0.9rem;
-    padding-top: 0.1rem;
-    flex-shrink: 0;
-  }
-  
-  .offscreen {
-    position: absolute;
-    left: -9999px;
-  }
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Instructions specific to screen readers */
+.instructions {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  margin-top: 0.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.6;
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: flex-start;
+}
+
+.instructions svg {
+  color: #333;
+  margin-right: 0.7rem;
+  font-size: 0.9rem;
+  padding-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.offscreen {
+  position: absolute;
+  left: -9999px;
+}

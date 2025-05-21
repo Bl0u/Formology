@@ -26,6 +26,8 @@ const formSlice = createSlice({
         formId: generateUniqueId(),
         sections: [],
       };
+
+      console.log('from reduxPersist', state.value) ;
     },
     isRequired: (state, action) => {
       state.value.sections = state.value.sections.map((section) => ({

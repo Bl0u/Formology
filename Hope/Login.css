@@ -1,0 +1,33 @@
+
+.offscreen {
+    position: absolute;
+    left: -9999px;
+  }
+  
+  .valid {
+    color: limegreen;
+    margin-left: 0.25rem;
+  }
+  
+  .invalid {
+    color: red;
+    margin-left: 0.25rem;
+  }
+  
+  .hide {
+    display: none;
+  }
+
+  .errmsg {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #000;
+    border-left: 3px solid #000;
+    font-weight: 500;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+  }

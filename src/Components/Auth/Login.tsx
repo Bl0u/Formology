@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import "./Auth.css";
+// import "./Login.css" ;
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import validateLogin from "../DB/LoginDB";
@@ -22,7 +23,15 @@ interface GoogleJwtPayload {
   // add whatever fields you need:
   // picture?: string;
 }
+import { FormContent } from "../NavbarButtons/type";
+import { store } from "../state/store";
+import { Dispatch } from "@reduxjs/toolkit";
+import { useDispatch, UseDispatch } from "react-redux";
+import { resetForm, setFormRedux } from "../state/Form/FormSlice";
+
 const Login: React.FC = () => {
+  const [form, setForm] = useState<FormContent>(); // Initialize local state from Redux
+
   const { errMsg, setErrMsg, setAuth, success, setSuccess } = useAuth();
   const navigate = useNavigate();
 
@@ -38,10 +47,16 @@ const Login: React.FC = () => {
   const errRef = useRef(null);
 
   const {emailLogged, setEmailLogged, setIsLogged} = useAuth() ;
+  const dispatcher = useDispatch() ;
+  useEffect(() => {
+    localStorage.clear() ;
+    dispatcher(resetForm(form));
+    
+    
+  }, [])
   useEffect(() => {
     const inputRef = emailRef.current as HTMLInputElement | null;
     inputRef?.focus();
-    // console.log("niggas");
   }, []);
 
   useEffect(() => {
@@ -280,7 +295,7 @@ const Login: React.FC = () => {
                         return;
                       }
                       const decoded = jwtDecode<GoogleJwtPayload>(credential);
-                      console.log(decoded);
+                      // console.log(decoded);
                       navigate("/"); // absolute path
                     }}
                     onError={() => console.log("Login Failed")}

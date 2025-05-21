@@ -8,6 +8,7 @@ const persistConfig = {
   key: "form",
   version: 1,
   storage,
+  blacklist: ['navigation'],
 };
 
 const reducer = combineReducers({
