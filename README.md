@@ -1,3 +1,26 @@
+# Formology
+
+## About
+Formology AI-Powered Form Builder — a powerful and intuitive alternative to Google Forms. It delivers all the core features you'd expect, but goes beyond with AI-driven form generation. Simply enter your topic, and our AI crafts a complete, well-structured form — including styled layouts, intelligently phrased questions, and optimized formats — so you don’t have to waste time figuring out how to ask the right question.
+It’s versatile and fully customizable: edit, remove, or add anything with ease. Whether you're building surveys, applications, or quizzes, this is your all-in-one, intelligent form-building assistant.
+
+
+## Features
+- AI-driven question generation
+- Fully editable and responsive design
+- Real-time preview and form validation
+
+
+## Tech Stack
+- **Frontend**: TypeScript (49.6%)
+- **Styling**: CSS (31.6%)
+- **Backend**: PHP (18.3%)
+- **Other**: (0.5%)
+
+## Documentation
+Detailed documentation, architecture overview is available as a Word document in the project repository:
+C:\Users\peter\Downloads\WDT Project\Formology\Formology.docx
+
 # Project Setup Guide
 
 This guide explains how to set up and run the project using XAMPP, including adding required files, running the PHP server, and using the application.
